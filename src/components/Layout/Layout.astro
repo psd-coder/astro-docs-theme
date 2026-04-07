@@ -55,6 +55,7 @@ const authorIcon = getAuthorIcon();
   <slot name="head-extra" />
 </head>
 <body class={styles.container}>
+  <a href="#main-content" class={styles.skipLink}>Skip to main content</a>
   <x-sticky-header role="header">
     <nav class:list={styles.nav}>
       <a href={getHref("")} class={styles.logo}>
@@ -100,7 +101,7 @@ const authorIcon = getAuthorIcon();
         <slot name="sidebar" />
       </aside>
     )}
-    <main class={styles.content}>
+    <main id="main-content" class={styles.content}>
       <slot />
     </main>
   </div>

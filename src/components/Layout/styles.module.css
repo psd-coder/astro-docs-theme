@@ -1,6 +1,28 @@
 @import url("../../styles/media.css");
 
 @layer docs-theme {
+  .skipLink {
+    position: absolute;
+    top: -100%;
+    left: calc(var(--spacing) * 4);
+    z-index: 100;
+
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    border-radius: var(--radius-sm);
+
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-accent);
+    text-decoration: none;
+
+    background: var(--color-surface-1);
+    box-shadow: 0 2px 8px oklch(0% 0 0 / 15%);
+
+    &:focus {
+      top: calc(var(--spacing) * 2);
+    }
+  }
+
   .container {
     display: grid;
     grid-template-columns:
@@ -160,6 +182,7 @@
   .content {
     flex: 1;
     min-width: 0;
+    scroll-margin-top: var(--layout-header-offset);
 
     & :is(h1, h2, h3, h4, h5, h6)[id] {
       scroll-margin-top: var(--layout-header-offset);
