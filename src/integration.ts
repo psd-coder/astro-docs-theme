@@ -7,6 +7,7 @@ import postcssPresetEnv from "postcss-preset-env";
 import sitemap from "@astrojs/sitemap";
 import type { DocsThemeConfig, SiteConfig } from "./types";
 import { deriveBase, deriveGitHubPagesSite, getGithubUrl } from "./utils/github";
+import { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -32,18 +33,20 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
         deepSections: config.docs.deepSections ?? [],
       }
     : null;
-  const shikiThemes = config.shikiThemes ?? {
-    light: "catppuccin-latte",
-    dark: "catppuccin-mocha",
-  };
+  const shikiConfig = config.shikiThemes
+    ? { themes: config.shikiThemes }
+    : { theme: adaptiveCodeTheme };
 
   const iconPath = config.icon ? path.resolve(config.icon) : null;
+
+  const hueSlider = config.hueSlider ?? false;
 
   const virtualModuleCode = `
 export const siteConfig = ${JSON.stringify(siteConfig)};
 export const githubUrl = ${JSON.stringify(githubUrl)};
 export const docsConfig = ${JSON.stringify(docsConfig)};
 export const iconPath = ${JSON.stringify(iconPath)};
+export const hueSlider = ${JSON.stringify(hueSlider)};
 `;
 
   return {
@@ -108,9 +111,7 @@ export const iconPath = ${JSON.stringify(iconPath)};
           base: astroConfig.base !== "/" ? astroConfig.base : base,
           integrations,
           markdown: {
-            shikiConfig: {
-              themes: shikiThemes,
-            },
+            shikiConfig,
             rehypePlugins: [
               rehypeSlug,
               [

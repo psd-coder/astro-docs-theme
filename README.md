@@ -137,7 +137,7 @@ type DocsThemeConfig = {
   site?: string;            // default: auto GitHub Pages URL
   icon?: string;            // path to 512x512 PNG or SVG, generates favicons + webmanifest
   hueSlider?: boolean;      // show hue slider in header for initial theme setup
-  shikiThemes?: {           // default: catppuccin-latte / catppuccin-mocha
+  shikiThemes?: {           // overrides adaptive hue-based theme
     light: string;
     dark: string;
   };
@@ -154,7 +154,7 @@ type DocsThemeConfig = {
 - Stores config in a virtual module (`virtual:theme-integration-config`) so components read it automatically
 - Auto-sets `site` and `base` from GitHub config (GitHub Pages URL in CI, `/` in dev)
 - Injects rehype-slug + rehype-autolink-headings
-- Injects Shiki themes (catppuccin by default)
+- Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
 - Injects PostCSS preset-env (nesting, custom-media, media-query-ranges)
 - When `icon` is configured: generates favicons (svg, ico, 96x96 png), apple-touch-icon, webmanifest + manifest icons
 - When `docs` is configured: injects sitemap + llms.txt, llms-full.txt, [slug].md routes
@@ -229,7 +229,7 @@ Props: `title`, `navItems?`. Slots: `default`, `sidebar`, `logo`, `head-extra`, 
 
 Import from `@psd-coder/astro-docs-theme/components/playground`:
 
-**CodeEditor** -- CodeMirror 6 with Catppuccin themes synced to dark mode.
+**CodeEditor** -- CodeMirror 6 with adaptive hue-based theme synced to dark mode.
 
 ```astro
 <CodeEditor lang="javascript" />

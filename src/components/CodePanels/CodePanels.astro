@@ -4,6 +4,7 @@ import Tabs from "../Tabs/Tabs.astro";
 import Tab from "../Tabs/Tab.astro";
 import styles from "./styles.module.css";
 import type { CodeLanguage } from "astro";
+import { adaptiveCodeTheme } from "../../themes/adaptive-code-theme";
 
 type Item = { id: string; content: string };
 
@@ -14,7 +15,7 @@ type Props = {
   shikiThemes?: { light: string; dark: string };
 };
 
-const { items, defaultValue, lang, shikiThemes = { light: "catppuccin-latte", dark: "catppuccin-mocha" } } = Astro.props;
+const { items, defaultValue, lang, shikiThemes } = Astro.props;
 ---
 
 <Tabs value={defaultValue} class={styles.tabs} data-ref="tabs">
@@ -24,6 +25,6 @@ const { items, defaultValue, lang, shikiThemes = { light: "catppuccin-latte", da
 </Tabs>
 {items.map(({ id, content }, i) => (
   <div class={styles.panel} data-value={id} hidden={i !== 0}>
-    <Code code={content} lang={lang} themes={shikiThemes} />
+    <Code code={content} lang={lang} {...(shikiThemes ? { themes: shikiThemes } : { theme: adaptiveCodeTheme })} />
   </div>
 ))}

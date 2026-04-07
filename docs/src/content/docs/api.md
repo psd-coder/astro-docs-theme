@@ -64,7 +64,7 @@ docsTheme({
 1. Stores config in a **virtual module** (`virtual:theme-integration-config`) so components read it automatically
 2. Auto-sets `site` and `base` from GitHub config (GitHub Pages URL in CI, `/` in dev)
 3. Injects **rehype-slug** + **rehype-autolink-headings**
-4. Injects **Shiki themes** (catppuccin by default)
+4. Injects an **adaptive Shiki theme** that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
 5. Injects **PostCSS preset-env** (nesting, custom-media, media-query-ranges)
 6. When `docs` is configured: injects **sitemap** + `llms.txt`, `llms-full.txt`, `[slug].md` routes
 7. When `icon` is configured: generates **favicons** (svg, ico, 96x96 png), **apple-touch-icon**, **webmanifest** + manifest icons (192x192, 512x512)

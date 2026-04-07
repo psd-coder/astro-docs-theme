@@ -39,7 +39,9 @@ a {
   outline-offset: -2px;
 }
 
-[data-theme="dark"] .astro-code,
-[data-theme="dark"] .astro-code span {
+/* Only override color for dual-theme Shiki output (spans with --shiki-dark set).
+   Adaptive single-theme spans use var(--code-*) directly and handle dark mode via CSS variables. */
+[data-theme="dark"] .astro-code[style*="--shiki-dark"],
+[data-theme="dark"] .astro-code span[style*="--shiki-dark"] {
   color: var(--shiki-dark) !important;
 }

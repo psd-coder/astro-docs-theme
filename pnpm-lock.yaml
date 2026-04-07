@@ -11,9 +11,6 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.1
         version: 3.7.2
-      '@catppuccin/codemirror':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@codemirror/lang-css':
         specifier: ^6.3.1
         version: 6.3.1
@@ -26,12 +23,18 @@ importers:
       '@codemirror/lang-json':
         specifier: ^6.0.1
         version: 6.0.2
+      '@codemirror/language':
+        specifier: ^6.12.3
+        version: 6.12.3
       '@codemirror/state':
         specifier: ^6.5.0
         version: 6.6.0
       '@codemirror/view':
         specifier: ^6.36.0
         version: 6.41.0
+      '@lezer/highlight':
+        specifier: ^1.2.3
+        version: 1.2.3
       '@nanostores/persistent':
         specifier: ^1.3.0
         version: 1.3.3(nanostores@1.2.0)
@@ -124,12 +127,6 @@ packages:
   '@capsizecss/unpack@4.0.0':
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
     engines: {node: '>=18'}
-
-  '@catppuccin/codemirror@1.0.3':
-    resolution: {integrity: sha512-P1ZCj4DZVLqr/TNz28m3aaF2Elrikpb8OOnzN0Vyf95Un4pTWTkCSvhbskbnJbnNJ87Rfvt3fXoaUj4o55X30Q==}
-
-  '@catppuccin/palette@1.8.0':
-    resolution: {integrity: sha512-qXhwKiLzQomUygUJYB36YAFgs+dET5bIocfkiaFIatQF5Pwc7L112TlF9P8J5Oqs3x3XTjYSucG0ncHXSCuk7Q==}
 
   '@clack/core@1.2.0':
     resolution: {integrity: sha512-qfxof/3T3t9DPU/Rj3OmcFyZInceqj/NVtO9rwIuJqCUgh32gwPjpFQQp/ben07qKlhpwq7GzfWpST4qdJ5Drg==}
@@ -2533,16 +2530,6 @@ snapshots:
   '@capsizecss/unpack@4.0.0':
     dependencies:
       fontkitten: 1.0.3
-
-  '@catppuccin/codemirror@1.0.3':
-    dependencies:
-      '@catppuccin/palette': 1.8.0
-      '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.41.0
-      '@lezer/highlight': 1.2.3
-
-  '@catppuccin/palette@1.8.0': {}
 
   '@clack/core@1.2.0':
     dependencies:
