@@ -1,0 +1,17 @@
+@layer docs-theme {
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: calc(var(--spacing) * 5);
+    padding: 0 calc(var(--spacing) * 1.5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.6;
+    color: var(--color-text-tertiary);
+  }
+}
