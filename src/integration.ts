@@ -54,7 +54,7 @@ export const search = ${JSON.stringify(search)};
 `;
 
   return {
-    name: "@psd-coder/astro-docs-theme",
+    name: "@psd-coder/astro-pigment",
     hooks: {
       "astro:config:setup": ({ config: astroConfig, updateConfig, injectRoute }) => {
         const site = config.site ?? deriveGitHubPagesSite(config.github);

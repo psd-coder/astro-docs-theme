@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.3",
-    "@psd-coder/astro-docs-theme": "link:..",
+    "@psd-coder/astro-pigment": "link:..",
     "astro": "^6.0.8",
     "nanostores": "^1.2.0",
     "nanotags": "^0.14.0"

@@ -1,4 +1,4 @@
-import { docEntryDataSchema } from "@psd-coder/astro-docs-theme/utils/schemas";
+import { docEntryDataSchema } from "@psd-coder/astro-pigment/utils/schemas";
 import { glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 

@@ -119,7 +119,7 @@ Text sizes from `--text-xxs` (0.625rem) to `--text-2xl` (2rem). Spacing base `--
 @custom-media --laptops (max-width: 80rem);   /* <1280px */
 ```
 
-Import `@psd-coder/astro-docs-theme/styles/media.css` to use these in your own CSS.
+Import `@psd-coder/astro-pigment/styles/media.css` to use these in your own CSS.
 
 ## Fonts
 
@@ -143,7 +143,7 @@ Reactive state stores available for client-side code:
 ```ts
 // Theme store
 import { $themeSetting, $resolvedTheme, cycleTheme }
-  from "@psd-coder/astro-docs-theme/stores/theme";
+  from "@psd-coder/astro-pigment/stores/theme";
 
 $themeSetting.get()   // "auto" | "light" | "dark"
 $resolvedTheme.get()  // "light" | "dark"
@@ -151,7 +151,7 @@ cycleTheme()          // auto -> light -> dark -> auto
 
 // Media queries
 import { $prefersDarkScheme, $prefersReducedMotion }
-  from "@psd-coder/astro-docs-theme/stores/media";
+  from "@psd-coder/astro-pigment/stores/media";
 
 $prefersDarkScheme.get()      // boolean
 $prefersReducedMotion.get()   // boolean
@@ -161,10 +161,10 @@ Both stores are powered by [nanostores](https://github.com/nanostores/nanostores
 
 ### Package manager store
 
-From `@psd-coder/astro-docs-theme/stores/pkgManager`:
+From `@psd-coder/astro-pigment/stores/pkgManager`:
 
 ```ts
-import { $pkgManager } from "@psd-coder/astro-docs-theme/stores/pkgManager";
+import { $pkgManager } from "@psd-coder/astro-pigment/stores/pkgManager";
 
 $pkgManager.get() // "pnpm" | "npm" | "yarn" | "bun"
 ```
@@ -172,8 +172,8 @@ $pkgManager.get() // "pnpm" | "npm" | "yarn" | "bun"
 Used by `InstallPackage` internally. Also available for custom `CodePanels`-based tab switchers via `defineCodePanels`:
 
 ```ts
-import { defineCodePanels } from "@psd-coder/astro-docs-theme/utils/defineCodePanels";
-import { $pkgManager } from "@psd-coder/astro-docs-theme/stores/pkgManager";
+import { defineCodePanels } from "@psd-coder/astro-pigment/utils/defineCodePanels";
+import { $pkgManager } from "@psd-coder/astro-pigment/stores/pkgManager";
 
 defineCodePanels("x-my-switcher", $pkgManager);
 ```
@@ -213,7 +213,7 @@ For sites with interactive code examples, import the content collection loader:
 
 ```ts
 // content.config.ts
-import { examplesLoader } from "@psd-coder/astro-docs-theme/loaders/examples";
+import { examplesLoader } from "@psd-coder/astro-pigment/loaders/examples";
 
 const examples = defineCollection({
   loader: examplesLoader("src/content/examples/"),
@@ -238,12 +238,12 @@ Stylelint config with CSS standards, clean ordering, and CSS Modules support:
 
 ```js
 // stylelint.config.js
-export default { extends: ["@psd-coder/astro-docs-theme/stylelint.config"] };
+export default { extends: ["@psd-coder/astro-pigment/stylelint.config"] };
 ```
 
 Browserslist targeting last 2 versions:
 
 ```
 // .browserslistrc
-extends @psd-coder/astro-docs-theme/browserslist
+extends @psd-coder/astro-pigment/browserslist
 ```
