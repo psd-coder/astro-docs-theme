@@ -48,7 +48,7 @@
   }
 
   .triggerLabel {
-    @media (--mobiles) {
+    @media (--tablets) {
       display: none;
     }
   }
