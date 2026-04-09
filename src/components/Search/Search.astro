@@ -1,0 +1,215 @@
+---
+import Kbd from "../Kbd/Kbd.astro";
+import Icon from "../Icon/Icon.astro";
+import styles from "./styles.module.css";
+---
+<x-search>
+  <button data-ref="trigger" class={styles.trigger} type="button" aria-label="Search docs">
+    <Icon name="search" size={16} class={styles.triggerIcon} />
+    <span class={styles.triggerLabel}>Search...</span>
+    <Kbd class={styles.kbd}>/</Kbd>
+  </button>
+  <dialog data-ref="dialog" class={styles.dialog}>
+    <div class={styles.panel}>
+      <div class={styles.inputWrapper}>
+        <Icon name="search" class={styles.inputIcon} />
+        <input data-ref="input" class={styles.input} type="search" placeholder="Search docs..." autocomplete="off" />
+        <Kbd>Esc</Kbd>
+      </div>
+      <div data-ref="resultsContainer" class={styles.resultsContainer}></div>
+      <template data-ref="resultsTpl">
+        <div data-ref="results" class={styles.results}></div>
+      </template>
+      <template data-ref="resultGroupTpl">
+        <div class={styles.resultGroup}>
+          <div data-page-title class={styles.resultGroupTitle}></div>
+          <ul data-blocks class={styles.resultGroupBlocks}></ul>
+        </div>
+      </template>
+      <template data-ref="resultBlockTpl">
+        <li>
+          <a class={styles.resultLink}>
+            <span data-heading class={styles.resultHeading}></span>
+            <span data-snippet class={styles.resultSnippet}></span>
+          </a>
+        </li>
+      </template>
+      <template data-ref="loadingTpl">
+        <div class={styles.message}>Loading search index...</div>
+      </template>
+      <template data-ref="searchingTpl">
+        <div class={styles.message}>Searching...</div>
+      </template>
+      <template data-ref="tooShortTpl">
+        <div class={styles.message}>Type at least 2 characters</div>
+      </template>
+      <template data-ref="emptyTpl">
+        <div class={styles.message}>No results found</div>
+      </template>
+    </div>
+  </dialog>
+</x-search>
+
+<script>
+  import { atom } from "nanostores";
+  import { define } from "nanotags";
+  import { render, renderList } from "nanotags/render";
+  import { createPostMessageTransport, createTypedChannel } from "typed-channel";
+  import { attachRovingFocus } from "../../attachments/attachRovingFocus";
+  import { isEditableTarget } from "../../utils/dom";
+  import { createDebouncedStore } from "../../utils/nanostores";
+  import { getHref } from "../../utils/urls";
+  import SearchWorker from "./search-worker.ts?worker&inline";
+  import styles from "./styles.module.css";
+  import type { ClientMessages, GroupedSearchResult, WorkerMessages } from "./types";
+
+  function highlightText(text: string, query: string): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    if (!text) return fragment;
+
+    const lower = text.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    let cursor = 0;
+
+    while (cursor < text.length) {
+      const idx = lower.indexOf(lowerQuery, cursor);
+      if (idx === -1) {
+        fragment.append(text.slice(cursor));
+        break;
+      }
+      if (idx > cursor) fragment.append(text.slice(cursor, idx));
+      const mark = document.createElement("mark");
+      mark.className = String(styles.resultMark);
+      mark.textContent = text.slice(idx, idx + query.length);
+      fragment.append(mark);
+      cursor = idx + query.length;
+    }
+
+    return fragment;
+  }
+
+  define("x-search")
+    .withRefs(({ one }) => ({
+      trigger: one("button"),
+      dialog: one("dialog"),
+      input: one("input"),
+      resultsContainer: one("div"),
+      resultsTpl: one("template"),
+      resultGroupTpl: one("template"),
+      resultBlockTpl: one("template"),
+      searchingTpl: one("template"),
+      loadingTpl: one("template"),
+      tooShortTpl: one("template"),
+      emptyTpl: one("template"),
+    }))
+    .setup((ctx) => {
+      const searchWorker = new SearchWorker();
+      const searchWorkerTransport = createPostMessageTransport<WorkerMessages, ClientMessages>(searchWorker);
+      const searchWorkerChannel = createTypedChannel(searchWorkerTransport);
+      const $query = atom("");
+      const $debouncedQuery = createDebouncedStore($query, 300);
+      const $results = atom<GroupedSearchResult[]>([]);
+
+      function reset(clearQuery = false) {
+        $results.set([]);
+        if (clearQuery) $query.set("");
+      }
+
+      function open() {
+        ctx.refs.dialog.showModal();
+        ctx.refs.input.focus();
+      }
+
+      function close() {
+        ctx.refs.dialog.close();
+        reset(true);
+      }
+
+      fetch(getHref("search-index.json"))
+        .then((r) => r.json())
+        .then((data) => searchWorkerChannel.emit("init", { data }));
+
+      // Trigger
+      ctx.on(ctx.refs.trigger, "click", open);
+      ctx.on(document, "keydown", (e: KeyboardEvent) => {
+        if (e.key === "/" && !ctx.refs.dialog.open && !isEditableTarget(e.target)) {
+          e.preventDefault();
+          open();
+        }
+      });
+
+      // Dialog
+      ctx.on(ctx.refs.dialog, "click", (e) => {
+        const target = e.target as HTMLElement;
+        if (target === ctx.refs.dialog || target.closest('a') !== null) {
+          close();
+        }
+      });
+      attachRovingFocus(
+        ctx,
+        () => Array.from(ctx.refs.resultsContainer.querySelectorAll("a")),
+        { orientation: "vertical", homeEnd: false },
+      );
+      // Combobox behavior: if user starts typing when focus is on results container, move it to input
+      ctx.on(ctx.refs.dialog, "keydown", (e: KeyboardEvent) => {
+        if (e.key.length !== 1 && e.key !== "Backspace") return;
+        ctx.refs.input.focus();
+      });
+
+      // Effects
+      ctx.bind($query, ctx.refs.input);
+      ctx.effect($debouncedQuery, (query) => {
+        if (query.length < 2) {
+          reset();
+          return;
+        }
+
+        searchWorkerChannel.emit("search", { query });
+      });
+      searchWorkerChannel.on("search-results", ({ data }) => $results.set(data));
+      ctx.effect([$query, $results], (query, results) => {
+        const queryLength = query.trim().length;
+        const hasQuery = queryLength > 0;
+        const hasResults = results.length > 0;
+
+        if (hasQuery && queryLength < 2) {
+          render(ctx.refs.resultsContainer, ctx.refs.tooShortTpl);
+        } else if (hasQuery && !hasResults) {
+          render(ctx.refs.resultsContainer, ctx.refs.emptyTpl);
+        } else if (hasQuery && hasResults) {
+          render(ctx.refs.resultsContainer, ctx.refs.resultsTpl, {
+            data: results,
+            update(el) {
+              renderList(el, ctx.refs.resultGroupTpl, {
+                data: results,
+                key: (group) => group.pageId,
+                update: (el: HTMLAnchorElement, data) => {
+                  const title = ctx.getElement(el, "[data-page-title]");
+                  const blocks = ctx.getElement(el, "[data-blocks]");
+                  
+                  title.textContent = data.pageTitle;
+                  renderList(blocks, ctx.refs.resultBlockTpl, {
+                    data: data.blocks,
+                    key: (block) => block.heading,
+                    update: (blockEl: HTMLAnchorElement, blockData) => {
+                      const link = ctx.getElement(blockEl, "a");
+                      const pageHref = getHref(data.pageId === "index" ? "" : data.pageId);
+                      const fragment = blockData.anchor ? `#${blockData.anchor}` : "";
+                      link.href = `${pageHref}${fragment}`;
+
+                      const heading = ctx.getElement(blockEl, "[data-heading]");
+                      const snippet = ctx.getElement(blockEl, "[data-snippet]");
+                      heading.textContent = blockData.heading;
+                      snippet.replaceChildren(highlightText(blockData.snippet, query));
+                    }
+                  });
+                },
+              });
+            }
+          });
+        } else {
+          ctx.refs.resultsContainer.innerHTML = "";
+        }
+      });
+    });
+</script>

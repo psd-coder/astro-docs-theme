@@ -41,6 +41,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
 
   const hueSlider = config.hueSlider ?? false;
   const clientRouter = config.clientRouter ?? true;
+  const search = (config.search ?? true) && docsConfig !== null;
 
   const virtualModuleCode = `
 export const siteConfig = ${JSON.stringify(siteConfig)};
@@ -49,6 +50,7 @@ export const docsConfig = ${JSON.stringify(docsConfig)};
 export const iconPath = ${JSON.stringify(iconPath)};
 export const hueSlider = ${JSON.stringify(hueSlider)};
 export const clientRouter = ${JSON.stringify(clientRouter)};
+export const search = ${JSON.stringify(search)};
 `;
 
   return {
@@ -75,6 +77,13 @@ export const clientRouter = ${JSON.stringify(clientRouter)};
             pattern: "/[...slug].md",
             entrypoint: path.resolve(__dirname, "pages/[...slug].md.ts"),
           });
+
+          if (search) {
+            injectRoute({
+              pattern: "/search-index.json",
+              entrypoint: path.resolve(__dirname, "pages/search-index.json.ts"),
+            });
+          }
         }
 
         if (iconPath) {

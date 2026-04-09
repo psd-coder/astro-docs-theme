@@ -1,17 +1,18 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
-import Footer from "../Footer/Footer.astro";
-import Icon from "../Icon/Icon.astro";
-import { siteConfig, githubUrl, iconPath, hueSlider, clientRouter } from "virtual:theme-integration-config";
+import { ClientRouter } from "astro:transitions";
+import { clientRouter, githubUrl, hueSlider, iconPath, search, siteConfig } from "virtual:theme-integration-config";
 import "../../styles/index.css";
-import { getHref, isActiveHref } from "../../utils/urls";
-import styles from "./styles.module.css";
-import { ThemeScript, ThemeToggle } from "../ThemeToggle";
-import HueSlider from "../HueSlider/HueSlider.astro";
-import HueScript from "../HueSlider/HueScript.astro";
-import CodeBlockWrapper from "../CodeBlockWrapper/CodeBlockWrapper.astro";
 import type { NavItem } from "../../types";
+import { getHref, isActiveHref } from "../../utils/urls";
+import CodeBlockWrapper from "../CodeBlockWrapper/CodeBlockWrapper.astro";
+import Footer from "../Footer/Footer.astro";
+import HueScript from "../HueSlider/HueScript.astro";
+import HueSlider from "../HueSlider/HueSlider.astro";
+import Icon from "../Icon/Icon.astro";
+import { Search } from "../Search";
+import { ThemeScript, ThemeToggle } from "../ThemeToggle";
+import styles from "./styles.module.css";
 
 type Props = {
   title: string;
@@ -77,6 +78,7 @@ const authorIcon = getAuthorIcon();
       )}
       <div class:list={[styles.links, styles.extraNav]}>
         {hueSlider && <HueSlider />}
+        {search && <Search />}
         <ThemeToggle />
         {authorIcon === "x" ? (
           <a href={siteConfig.author.url} class:list={[styles.link, styles.square]} aria-label={siteConfig.author.name}>

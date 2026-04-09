@@ -5,6 +5,7 @@ export type IconName =
   | "github"
   | "list"
   | "markdown"
+  | "search"
   | "x"
   | "custom";
 
@@ -47,6 +48,8 @@ export type DocsThemeConfig = SiteConfig & {
     light: string;
     dark: string;
   };
+  /** Enable full-text search. Requires `docs` config. Default: false. */
+  search?: boolean;
   docs?: {
     directory: string;
     pattern?: string;

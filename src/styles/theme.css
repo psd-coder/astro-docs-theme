@@ -7,11 +7,13 @@
   --color-text-primary: oklch(15% 0.025 var(--theme-hue));
   --color-text-secondary: oklch(40% 0.02 var(--theme-hue));
   --color-text-tertiary: oklch(75% 0.02 var(--theme-hue));
+  --color-text-tertiary-hover: oklch(from var(--color-text-tertiary) calc(l - 0.15) c h);
   --color-accent: oklch(55% 0.15 var(--theme-hue));
   --color-accent-dark: oklch(50% 0.15 var(--theme-hue));
   --color-accent-focus: oklch(from var(--color-accent) l c h / 50%);
   --color-border: oklch(90% 0.02 var(--theme-hue));
   --color-border-hover: oklch(82% 0.02 var(--theme-hue));
+  --color-backdrop: oklch(0% 0 var(--theme-hue) / 50%);
 
   /* Code highlighting: hue offsets from Catppuccin, anchored so --code-string = --theme-hue.
      Absolute oklch with moderate chroma to stay in sRGB gamut at all hues. */
@@ -50,11 +52,13 @@
   --color-text-primary: oklch(90% 0.02 var(--theme-hue));
   --color-text-secondary: oklch(75% 0.02 var(--theme-hue));
   --color-text-tertiary: oklch(45% 0.02 var(--theme-hue));
+  --color-text-tertiary-hover: oklch(from var(--color-text-tertiary) calc(l + 0.15) c h);
   --color-accent: oklch(65% 0.15 var(--theme-hue));
   --color-accent-dark: oklch(60% 0.15 var(--theme-hue));
   --color-accent-focus: oklch(from var(--color-accent) l c h / 50%);
   --color-border: oklch(25% 0.02 var(--theme-hue));
   --color-border-hover: oklch(35% 0.02 var(--theme-hue));
+  --color-backdrop: oklch(30% 0 var(--theme-hue) / 80%);
 
   --code-keyword: oklch(75% 0.11 mod(calc(var(--theme-hue) + 155), 360));
   --code-string: oklch(76% 0.11 var(--theme-hue));

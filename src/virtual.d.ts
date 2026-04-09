@@ -31,4 +31,5 @@ declare module "virtual:theme-integration-config" {
   export const iconPath: string | null;
   export const hueSlider: boolean;
   export const clientRouter: boolean;
+  export const search: boolean;
 }
