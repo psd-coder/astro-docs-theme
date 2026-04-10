@@ -1,11 +1,9 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
 import docsTheme, { fonts } from "@psd-coder/astro-pigment";
 
 export default defineConfig({
   integrations: [
-    mdx(),
     docsTheme({
       github: { user: "psd-coder", repository: "astro-pigment" },
       project: {

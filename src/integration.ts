@@ -4,6 +4,7 @@ import type { AstroIntegration } from "astro";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import postcssPresetEnv from "postcss-preset-env";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import type { DocsThemeConfig, SiteConfig } from "./types";
 import { deriveBase, deriveGitHubPagesSite, getGithubUrl } from "./utils/github";
@@ -61,6 +62,10 @@ export const search = ${JSON.stringify(search)};
         const base = config.site ? "/" : deriveBase(config.github);
 
         const integrations: AstroIntegration[] = [];
+
+        if (!astroConfig.integrations.some((i) => i.name === "@astrojs/mdx")) {
+          integrations.push(mdx());
+        }
 
         if (docsConfig) {
           integrations.push(sitemap());

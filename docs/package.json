@@ -7,7 +7,6 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.3",
     "@psd-coder/astro-pigment": "link:..",
     "astro": "^6.0.8",
     "nanostores": "^1.2.0",

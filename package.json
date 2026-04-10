@@ -31,6 +31,7 @@
     "nanotags": "^0.14.0"
   },
   "dependencies": {
+    "@astrojs/mdx": "^5.0.3",
     "@astrojs/sitemap": "^3.7.1",
     "@codemirror/lang-css": "^6.3.1",
     "@codemirror/lang-html": "^6.4.9",
