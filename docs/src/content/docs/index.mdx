@@ -62,42 +62,25 @@ export default defineConfig({
       },
       author: { name: "Your Name", url: "https://x.com/your_handle" },
       icon: "src/assets/icon.svg",
-      docs: { directory: "src/content/docs" },
+      navLinks: [
+        { href: "/", label: "Overview" },
+        { href: "/api", label: "API" },
+      ],
     }),
   ],
 });
 ```
 
-### 2. Create a page
+### 2. Wire up the content collection
 
-```astro
----
-// src/pages/[...slug].astro
-import { getCollection, render } from "astro:content";
-import { Layout, TableOfContents, PageHeading }
-  from "@psd-coder/astro-pigment/components";
-import { getDocsCollection } from "@psd-coder/astro-pigment/utils/content";
-import { getHref } from "@psd-coder/astro-pigment/utils/urls";
+```ts
+// src/content.config.ts
+import { defineDocsCollections } from "@psd-coder/astro-pigment/content";
 
-export async function getStaticPaths() {
-  const docs = await getDocsCollection();
-  return docs.map((doc) => ({
-    params: { slug: doc.id === "index" ? undefined : doc.id },
-    props: { doc },
-  }));
-}
-
-const { doc } = Astro.props;
-const { Content, headings } = await render(doc);
----
-<Layout title={doc.data.title}>
-  <TableOfContents slot="sidebar" headings={headings} itemsSelector=".prose :is(h2, h3)[id]" />
-  <article class="prose">
-    <PageHeading title={doc.data.title} href={getHref(`${doc.id}.md`)} />
-    <Content />
-  </article>
-</Layout>
+export const collections = defineDocsCollections();
 ```
+
+Drop `.md`/`.mdx` files into `src/content/docs/`. The integration injects `/[...slug]` automatically — pages render with the layout, TOC, prev/next navigation, and edit-on-github link out of the box. To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro` (reuse `getDocsStaticPaths` from `@psd-coder/astro-pigment/utils/content` to skip the boilerplate).
 
 Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, LLM endpoints, and footer are all wired up automatically.
 

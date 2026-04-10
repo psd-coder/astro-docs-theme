@@ -27,13 +27,14 @@ function extractSiteConfig(config: DocsThemeConfig): SiteConfig {
 export function createIntegration(config: DocsThemeConfig): AstroIntegration {
   const githubUrl = getGithubUrl(config.project.github);
   const siteConfig = extractSiteConfig(config);
-  const docsConfig = config.docs
-    ? {
-        directory: config.docs.directory,
-        pattern: config.docs.pattern ?? "**/*.{md,mdx}",
-        deepSections: config.docs.deepSections ?? [],
-      }
-    : null;
+  const docsConfig = {
+    directory: config.docs?.directory ?? "src/content/docs",
+    pattern: config.docs?.pattern ?? "**/*.{md,mdx}",
+    deepSections: config.docs?.deepSections ?? [],
+  };
+  const renderDefaultPage = config.docs?.renderDefaultPage ?? true;
+  const tocItemsSelector = config.docs?.tocItemsSelector ?? ".prose :is(h2, h3)[id]";
+  const navLinks = config.navLinks ?? [];
   const shikiConfig = config.shikiThemes
     ? { themes: config.shikiThemes }
     : { theme: adaptiveCodeTheme };
@@ -42,7 +43,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
 
   const hueSlider = config.hueSlider ?? false;
   const clientRouter = config.clientRouter ?? true;
-  const search = (config.search ?? true) && docsConfig !== null;
+  const search = config.search ?? true;
 
   const virtualModuleCode = `
 export const siteConfig = ${JSON.stringify(siteConfig)};
@@ -52,6 +53,8 @@ export const iconPath = ${JSON.stringify(iconPath)};
 export const hueSlider = ${JSON.stringify(hueSlider)};
 export const clientRouter = ${JSON.stringify(clientRouter)};
 export const search = ${JSON.stringify(search)};
+export const navLinks = ${JSON.stringify(navLinks)};
+export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
 `;
 
   return {
@@ -67,28 +70,33 @@ export const search = ${JSON.stringify(search)};
           integrations.push(mdx());
         }
 
-        if (docsConfig) {
-          integrations.push(sitemap());
+        integrations.push(sitemap());
 
-          injectRoute({
-            pattern: "/llms.txt",
-            entrypoint: path.resolve(__dirname, "pages/llms.txt.ts"),
-          });
-          injectRoute({
-            pattern: "/llms-full.txt",
-            entrypoint: path.resolve(__dirname, "pages/llms-full.txt.ts"),
-          });
-          injectRoute({
-            pattern: "/[...slug].md",
-            entrypoint: path.resolve(__dirname, "pages/[...slug].md.ts"),
-          });
+        injectRoute({
+          pattern: "/llms.txt",
+          entrypoint: path.resolve(__dirname, "pages/llms.txt.ts"),
+        });
+        injectRoute({
+          pattern: "/llms-full.txt",
+          entrypoint: path.resolve(__dirname, "pages/llms-full.txt.ts"),
+        });
+        injectRoute({
+          pattern: "/[...slug].md",
+          entrypoint: path.resolve(__dirname, "pages/[...slug].md.ts"),
+        });
 
-          if (search) {
-            injectRoute({
-              pattern: "/search-index.json",
-              entrypoint: path.resolve(__dirname, "pages/search-index.json.ts"),
-            });
-          }
+        if (renderDefaultPage) {
+          injectRoute({
+            pattern: "/[...slug]",
+            entrypoint: path.resolve(__dirname, "pages/[...slug].astro"),
+          });
+        }
+
+        if (search) {
+          injectRoute({
+            pattern: "/search-index.json",
+            entrypoint: path.resolve(__dirname, "pages/search-index.json.ts"),
+          });
         }
 
         if (iconPath) {

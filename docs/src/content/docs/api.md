@@ -49,11 +49,19 @@ docsTheme({
   // Optional: syntax highlighting themes (overrides adaptive hue-based theme)
   shikiThemes: { light: "github-light", dark: "github-dark" },
 
-  // Optional: enable SEO/LLM endpoints
+  // Optional: header navigation links (href accepts "/api" or "api")
+  navLinks: [
+    { href: "/", label: "Overview" },
+    { href: "/api", label: "API" },
+  ],
+
+  // Optional: docs collection settings (all fields optional, sensible defaults applied)
   docs: {
-    directory: "src/content/docs",
-    pattern: "**/*.{md,mdx}",
+    directory: "src/content/docs", // default
+    pattern: "**/*.{md,mdx}",      // default
     deepSections: ["api"],
+    renderDefaultPage: true,       // default; set false to ship your own [...slug].astro
+    tocItemsSelector: ".prose :is(h2, h3)[id]", // default
   },
 })
 ```
@@ -65,8 +73,9 @@ docsTheme({
 3. Injects **rehype-slug** + **rehype-autolink-headings**
 4. Injects an **adaptive Shiki theme** that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
 5. Injects **PostCSS preset-env** (nesting, custom-media, media-query-ranges)
-6. When `docs` is configured: injects **sitemap** + `llms.txt`, `llms-full.txt`, `[slug].md` routes
-7. When `icon` is configured: generates **favicons** (svg, ico, 96x96 png), **apple-touch-icon**, **webmanifest** + manifest icons (192x192, 512x512)
+6. Injects **sitemap** + `llms.txt`, `llms-full.txt`, `[slug].md` routes
+7. Injects `/[...slug]` page that renders docs from the content collection (opt out with `docs.renderDefaultPage: false`)
+8. When `icon` is configured: generates **favicons** (svg, ico, 96x96 png), **apple-touch-icon**, **webmanifest** + manifest icons (192x192, 512x512)
 
 ## CSS Customization
 

@@ -19,7 +19,12 @@ export default defineConfig({
       icon: "src/assets/icon.svg",
       hueSlider: true,
       search: true,
-      docs: { directory: "src/content/docs" },
+      navLinks: [
+        { href: "/", label: "Overview" },
+        { href: "/api", label: "API" },
+        { href: "/components", label: "Components" },
+        { href: "/theme-preview", label: "Theme Preview" },
+      ],
     }),
   ],
 });

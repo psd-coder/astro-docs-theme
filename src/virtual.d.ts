@@ -21,15 +21,22 @@ declare module "virtual:theme-integration-config" {
     }>;
   };
 
+  type NavItem = {
+    href: string;
+    label: string;
+  };
+
   export const siteConfig: SiteConfig;
   export const githubUrl: string;
   export const docsConfig: {
     directory: string;
     pattern: string;
     deepSections: string[];
-  } | null;
+  };
   export const iconPath: string | null;
   export const hueSlider: boolean;
   export const clientRouter: boolean;
   export const search: boolean;
+  export const navLinks: NavItem[];
+  export const tocItemsSelector: string;
 }

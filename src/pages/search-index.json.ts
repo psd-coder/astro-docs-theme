@@ -1,16 +1,11 @@
 import type { APIRoute } from "astro";
 import { slug as githubSlug } from "github-slugger";
 import type { BlockEntry } from "../components/Search/types";
-import { docsConfig } from "virtual:theme-integration-config";
 import { getDocsCollection } from "../utils/content";
 import { splitMarkdownIntoSections } from "../utils/markdown";
 import { jsonResponse } from "../utils/response";
 
 export const GET: APIRoute = async () => {
-  if (!docsConfig) {
-    return jsonResponse([]);
-  }
-
   const docs = await getDocsCollection();
   const index: BlockEntry[] = [];
 

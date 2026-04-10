@@ -54,41 +54,25 @@ export default defineConfig({
       },
       author: { name: "Your Name", url: "https://x.com/your_handle" },
       icon: "src/assets/icon.svg",
-      docs: { directory: "src/content/docs" },
+      navLinks: [
+        { href: "/", label: "Overview" },
+        { href: "/api", label: "API" },
+      ],
     }),
   ],
 });
 ```
 
-```astro
----
-// src/pages/[...slug].astro
-import { getCollection, render } from "astro:content";
-import { Layout, TableOfContents, PageHeading } from "@psd-coder/astro-pigment/components";
-import { getDocsCollection } from "@psd-coder/astro-pigment/utils/content";
-import { getHref } from "@psd-coder/astro-pigment/utils/urls";
+```ts
+// src/content.config.ts
+import { defineDocsCollections } from "@psd-coder/astro-pigment/content";
 
-export async function getStaticPaths() {
-  const docs = await getDocsCollection();
-  return docs.map((doc) => ({
-    params: { slug: doc.id === "index" ? undefined : doc.id },
-    props: { doc },
-  }));
-}
-
-const { doc } = Astro.props;
-const { Content, headings } = await render(doc);
----
-<Layout title={doc.data.title}>
-  <TableOfContents slot="sidebar" headings={headings} itemsSelector=".prose :is(h2, h3)[id]" />
-  <article class="prose">
-    <PageHeading title={doc.data.title} href={getHref(`${doc.id}.md`)} />
-    <Content />
-  </article>
-</Layout>
+export const collections = defineDocsCollections();
 ```
 
-Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, LLM endpoints, and footer are all wired up automatically.
+Drop your `.md`/`.mdx` files in `src/content/docs/`. The integration injects `/[...slug]` automatically; pages render with the full layout, TOC, prev/next navigation, and edit-on-github link out of the box. Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, and LLM endpoints are all wired up automatically.
+
+To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro`. Reuse the boilerplate via `getDocsStaticPaths` from `@psd-coder/astro-pigment/utils/content`.
 
 ### Pick a theme hue (optional)
 
@@ -141,10 +125,13 @@ type DocsThemeConfig = {
     light: string;
     dark: string;
   };
-  docs?: {                  // enables auto-generated SEO/LLM endpoints
-    directory: string;      // e.g. "src/content/docs"
+  navLinks?: NavItem[];     // header nav links; href accepts "/api" or "api"
+  docs?: {
+    directory?: string;     // default: "src/content/docs"
     pattern?: string;       // default: "**/*.{md,mdx}"
     deepSections?: string[];// slugs where llms.txt shows ### headings
+    renderDefaultPage?: boolean; // default: true. set false to ship your own [...slug].astro
+    tocItemsSelector?: string;   // default: ".prose :is(h2, h3)[id]"
   };
 };
 ```
@@ -157,7 +144,8 @@ type DocsThemeConfig = {
 - Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
 - Injects PostCSS preset-env (nesting, custom-media, media-query-ranges)
 - When `icon` is configured: generates favicons (svg, ico, 96x96 png), apple-touch-icon, webmanifest + manifest icons
-- When `docs` is configured: injects sitemap + llms.txt, llms-full.txt, [slug].md routes
+- Injects sitemap + llms.txt, llms-full.txt, [slug].md routes
+- Injects `/[...slug]` page rendering docs from the content collection (opt out with `docs.renderDefaultPage: false`)
 
 ## Components
 

@@ -10,6 +10,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./content": "./src/content.ts",
     "./components": "./src/components/index.ts",
     "./components/playground": "./src/components/playground.ts",
     "./stores/theme": "./src/stores/theme.ts",

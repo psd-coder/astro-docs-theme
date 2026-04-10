@@ -6,7 +6,7 @@ import { markdownResponse } from "../utils/response";
 
 const base = import.meta.env.BASE_URL;
 
-const DEEP_SLUGS = new Set(docsConfig?.deepSections ?? []);
+const DEEP_SLUGS = new Set(docsConfig.deepSections);
 
 export const GET: APIRoute = async () => {
   const docs = await getDocsCollection();

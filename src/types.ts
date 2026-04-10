@@ -52,10 +52,17 @@ export type DocsThemeConfig = SiteConfig & {
   search?: boolean;
   /** Inject bundled Martian Grotesk + Mono fonts. Set false to opt out. Default: true. */
   fonts?: boolean;
+  /** Header navigation links. Hrefs may be relative ("api") or absolute ("/api"). */
+  navLinks?: NavItem[];
   docs?: {
-    directory: string;
+    /** Default: "src/content/docs". */
+    directory?: string;
     pattern?: string;
     deepSections?: string[];
+    /** Auto-inject the default [...slug] page. Default: true. */
+    renderDefaultPage?: boolean;
+    /** TOC active-item selector used by the default page. Default: ".prose :is(h2, h3)[id]". */
+    tocItemsSelector?: string;
   };
 };
 
