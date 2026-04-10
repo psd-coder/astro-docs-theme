@@ -13,7 +13,7 @@ LLM-friendly endpoints, and a library of interactive components.
 - **CSS variable theming**: override `--theme-hue-override` or `--layout-width-override` in plain CSS
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
-- **Bundled fonts**: optional Martian Grotesk + Martian Mono via `fonts()` helper
+- **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
 - **Accessible**: roving focus, ARIA attributes, keyboard navigation throughout
 - **Zero build step**: Astro resolves `.astro`/`.ts` source directly from the package
 
@@ -46,7 +46,7 @@ pnpm install
 ```js
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import docsTheme, { fonts } from "@psd-coder/astro-pigment";
+import docsTheme from "@psd-coder/astro-pigment";
 
 export default defineConfig({
   integrations: [
@@ -65,7 +65,6 @@ export default defineConfig({
       docs: { directory: "src/content/docs" },
     }),
   ],
-  fonts: fonts(),
 });
 ```
 

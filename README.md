@@ -10,7 +10,7 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
 - **Auto-generated favicons**: provide a single 512x512 icon, get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
-- **Bundled fonts**: optional Martian Grotesk + Martian Mono via `fonts()` helper
+- **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
 - **Accessible**: roving focus, ARIA attributes, keyboard navigation throughout
 - **Zero build step**: Astro resolves `.astro`/`.ts` source directly from the package
 
@@ -41,7 +41,7 @@ pnpm install
 ```js
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import docsTheme, { fonts } from "@psd-coder/astro-pigment";
+import docsTheme from "@psd-coder/astro-pigment";
 
 export default defineConfig({
   integrations: [
@@ -57,7 +57,6 @@ export default defineConfig({
       docs: { directory: "src/content/docs" },
     }),
   ],
-  fonts: fonts(),
 });
 ```
 
@@ -285,7 +284,7 @@ Typography: `--text-xxs` (0.625rem) through `--text-2xl` (2rem). Spacing base: `
 
 ## Fonts
 
-The `fonts()` helper resolves bundled Martian Grotesk (variable weight) and Martian Mono (400) as local fonts. It sets `--font-sans` and `--font-mono` CSS variables. Fully optional: skip it and set those CSS variables to your own fonts.
+The integration auto-injects bundled Martian Grotesk (variable weight) and Martian Mono (400) as local fonts, setting `--font-sans` and `--font-mono` CSS variables. Pass `fonts: false` to opt out and set those variables to your own fonts.
 
 ## Stores
 

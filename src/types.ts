@@ -50,6 +50,8 @@ export type DocsThemeConfig = SiteConfig & {
   };
   /** Enable full-text search. Requires `docs` config. Default: false. */
   search?: boolean;
+  /** Inject bundled Martian Grotesk + Mono fonts. Set false to opt out. Default: true. */
+  fonts?: boolean;
   docs?: {
     directory: string;
     pattern?: string;

@@ -122,13 +122,15 @@ Import `@psd-coder/astro-pigment/styles/media.css` to use these in your own CSS.
 
 ## Fonts
 
-The `fonts()` helper resolves bundled **Martian Grotesk** (variable weight sans) and **Martian Mono** (400 monospace). It sets `--font-sans` and `--font-mono` CSS variables. Fully optional: skip it and set those CSS variables with your own fonts.
+The integration auto-injects bundled **Martian Grotesk** (variable weight sans) and **Martian Mono** (400 monospace), setting `--font-sans` and `--font-mono` CSS variables. Pass `fonts: false` to opt out and provide your own via Astro's top-level `fonts` field.
 
 ```js
-// Use bundled fonts
-fonts: fonts(),
-
-// Or use your own
+// Opt out of bundled fonts and use your own
+docsTheme({
+  // ...
+  fonts: false,
+}),
+// then in defineConfig:
 fonts: [
   { provider: fontProviders.google(), name: "Inter", cssVariable: "--font-sans" },
   { provider: fontProviders.google(), name: "Fira Code", cssVariable: "--font-mono" },

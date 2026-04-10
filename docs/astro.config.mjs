@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import docsTheme, { fonts } from "@psd-coder/astro-pigment";
+import docsTheme from "@psd-coder/astro-pigment";
 
 export default defineConfig({
   integrations: [
@@ -22,5 +22,4 @@ export default defineConfig({
       docs: { directory: "src/content/docs" },
     }),
   ],
-  fonts: fonts(),
 });

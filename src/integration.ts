@@ -7,6 +7,7 @@ import postcssPresetEnv from "postcss-preset-env";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import type { DocsThemeConfig, SiteConfig } from "./types";
+import { fonts } from "./utils/fonts";
 import { deriveBase, deriveGitHubPagesSite, getGithubUrl } from "./utils/github";
 import { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
 
@@ -125,6 +126,7 @@ export const search = ${JSON.stringify(search)};
           site: astroConfig.site ?? site,
           base: astroConfig.base !== "/" ? astroConfig.base : base,
           integrations,
+          ...(config.fonts !== false && { fonts: fonts() }),
           markdown: {
             shikiConfig,
             rehypePlugins: [
