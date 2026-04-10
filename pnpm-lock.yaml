@@ -94,8 +94,8 @@ importers:
         specifier: ^1.0.0
         version: 1.2.0
       nanotags:
-        specifier: ^0.14.0
-        version: 0.14.0(nanostores@1.2.0)
+        specifier: ^0.15.0
+        version: 0.15.0(nanostores@1.2.0)
       oxfmt:
         specifier: ^0.35.0
         version: 0.35.0
@@ -1848,8 +1848,8 @@ packages:
     resolution: {integrity: sha512-F0wCzbsH80G7XXo0Jd9/AVQC7ouWY6idUCTnMwW5t/Rv9W8qmO6endavDwg7TNp5GbugwSukFMVZqzPSrSMndg==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
-  nanotags@0.14.0:
-    resolution: {integrity: sha512-Cgazsjfn/948wayBf+oHzhgaPpxibPUhj4jrIlRpmizKvvbHJIxRWAvLfZtCVxpO9YY8NVtZD9TFSIjZjJQh4Q==}
+  nanotags@0.15.0:
+    resolution: {integrity: sha512-+HbFjP8RVJBXaFuxtz4Z8Fzh6rFBGjLGddjZZxWOmC7Ga7W4Ujsm3u77fljQAnFsSN/X2UOpTrvH5pg03wzMGA==}
     peerDependencies:
       nanostores: ^1.1.1
 
@@ -4304,7 +4304,7 @@ snapshots:
 
   nanostores@1.2.0: {}
 
-  nanotags@0.14.0(nanostores@1.2.0):
+  nanotags@0.15.0(nanostores@1.2.0):
     dependencies:
       '@standard-schema/spec': 1.1.0
       nanostores: 1.2.0
