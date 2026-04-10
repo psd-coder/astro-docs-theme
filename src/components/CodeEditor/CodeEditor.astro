@@ -16,7 +16,7 @@ const { class: className, lang, ...rest } = Astro.props;
   import { html } from "@codemirror/lang-html";
   import { css } from "@codemirror/lang-css";
   import { json } from "@codemirror/lang-json";
-  import { adaptiveCodeMirrorTheme } from "../../utils/codemirror-adaptive-theme";
+  import { adaptiveCodeMirrorTheme } from "../../themes/codemirror-adaptive-theme";
 
   const SUPPORTED_LANGS = ["javascript", "html", "css", "importmap"] as const;
   type SupportedLang = (typeof SUPPORTED_LANGS)[number];
