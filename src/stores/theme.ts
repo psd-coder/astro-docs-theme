@@ -33,11 +33,18 @@ function applyTheme(themeSetting: ThemeSetting, resolvedTheme: ResolvedTheme) {
 }
 
 if (typeof window !== "undefined") {
-  effect([$themeSetting, $resolvedTheme], (themeSetting, resolveTheme) => {
+  effect($themeSetting, (themeSetting) => {
+    const resolvedTheme = $resolvedTheme.get();
+
     if ($prefersReducedMotion.get() || !document.startViewTransition) {
-      applyTheme(themeSetting, resolveTheme);
+      applyTheme(themeSetting, resolvedTheme);
     } else {
-      document.startViewTransition(() => applyTheme(themeSetting, resolveTheme));
+      document.documentElement.dataset.themeSwitching = "";
+      document.startViewTransition(() =>
+        applyTheme(themeSetting, resolvedTheme),
+      ).finished.then(() => {
+        delete document.documentElement.dataset.themeSwitching;
+      });
     }
   });
 }

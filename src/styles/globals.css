@@ -23,6 +23,10 @@
   scrollbar-color: oklch(from var(--color-accent-dark) calc(l + 0.1) c h) transparent;
 }
 
+html[data-theme-switching] * {
+  transition-duration: 0s !important;
+}
+
 body,
 html {
   font-family: var(--font-sans);
