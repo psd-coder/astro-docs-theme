@@ -11,8 +11,8 @@ const DEEP_SLUGS = new Set(docsConfig?.deepSections ?? []);
 export const GET: APIRoute = async () => {
   const docs = await getDocsCollection();
 
-  const sections = docs.map((doc: { id: string; data: { title: string; description: string } }) => {
-    const headings = extractSections(docsConfig!.directory, doc.id);
+  const sections = docs.map((doc) => {
+    const headings = extractSections(doc.body ?? "");
     return [
       `## ${doc.data.title}`,
       "",

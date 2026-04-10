@@ -1,10 +1,36 @@
-import { readFileSync } from "node:fs";
-import type { RootContent } from "mdast";
+import type { Root, RootContent } from "mdast";
 import { toString } from "mdast-util-to-string";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
+import remarkStringify from "remark-stringify";
 import { unified } from "unified";
+import { SKIP, visit } from "unist-util-visit";
 
-const parser = unified().use(remarkParse);
+const parser = unified().use(remarkParse).use(remarkFrontmatter, ["yaml", "toml"]).use(remarkMdx);
+
+const stringifier = unified()
+  .use(remarkStringify, { bullet: "-", rule: "-", fence: "`", fences: true })
+  .use(remarkFrontmatter, ["yaml", "toml"])
+  .use(remarkMdx);
+
+const DROP = new Set(["yaml", "toml", "mdxjsEsm", "mdxFlowExpression", "mdxTextExpression"]);
+const UNWRAP = new Set(["mdxJsxFlowElement", "mdxJsxTextElement"]);
+
+function stripMdxNodes(tree: Root): void {
+  visit(tree, (node, index, parent) => {
+    if (!parent || index === undefined) return undefined;
+    if (DROP.has(node.type)) {
+      parent.children.splice(index, 1);
+      return [SKIP, index];
+    }
+    if (UNWRAP.has(node.type) && "children" in node) {
+      parent.children.splice(index, 1, ...(node.children as RootContent[]));
+      return [SKIP, index];
+    }
+    return undefined;
+  });
+}
 
 function nodesToPlainText(nodes: RootContent[]): string {
   return nodes
@@ -14,24 +40,17 @@ function nodesToPlainText(nodes: RootContent[]): string {
     .trim();
 }
 
-export function cleanMarkdown(raw: string): string {
-  return raw.replace(/^---\n[\s\S]*?\n---\n*/, "").replace(/^import\s+.*;\s*\n/gm, "");
-}
-
-export function readDocFile(directory: string, slug: string): string {
-  let raw: string;
-  try {
-    raw = readFileSync(`${directory}/${slug}.md`, "utf-8");
-  } catch {
-    raw = readFileSync(`${directory}/${slug}.mdx`, "utf-8");
-  }
-  return cleanMarkdown(raw);
+export function stringifyCleanMarkdown(body: string): string {
+  const tree = parser.parse(body);
+  stripMdxNodes(tree);
+  return String(stringifier.stringify(tree));
 }
 
 type Section = { title: string; methods: string[] };
 
-export function extractSections(directory: string, slug: string): Section[] {
-  const tree = parser.parse(readDocFile(directory, slug));
+export function extractSections(body: string): Section[] {
+  const tree = parser.parse(body);
+  stripMdxNodes(tree);
   const result: Section[] = [];
 
   for (const node of tree.children) {
@@ -47,7 +66,8 @@ export function extractSections(directory: string, slug: string): Section[] {
 type MarkdownSection = { heading: string; level: number; body: string };
 
 export function splitMarkdownIntoSections(raw: string): MarkdownSection[] {
-  const tree = parser.parse(cleanMarkdown(raw));
+  const tree = parser.parse(raw);
+  stripMdxNodes(tree);
   const sections: MarkdownSection[] = [];
   let heading = "";
   let level = 0;

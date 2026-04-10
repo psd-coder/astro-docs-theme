@@ -1,7 +1,6 @@
 import type { APIRoute, GetStaticPaths } from "astro";
-import { docsConfig } from "virtual:theme-integration-config";
 import { getDocsCollection } from "../utils/content";
-import { readDocFile } from "../utils/markdown";
+import { stringifyCleanMarkdown } from "../utils/markdown";
 import { markdownResponse } from "../utils/response";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -9,6 +8,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return docs.map((doc: { id: string }) => ({ params: { slug: doc.id } }));
 };
 
-export const GET: APIRoute = ({ params }) => {
-  return markdownResponse(readDocFile(docsConfig!.directory, params.slug!));
+export const GET: APIRoute = async ({ params }) => {
+  const docs = await getDocsCollection();
+  const entry = docs.find((d) => d.id === params.slug);
+  if (!entry?.body) return new Response(null, { status: 404 });
+  return markdownResponse(stringifyCleanMarkdown(entry.body));
 };
