@@ -61,7 +61,7 @@
     "nanostores": "^1.0.0",
     "nanotags": "^0.14.0",
     "oxfmt": "^0.35.0",
-    "oxlint": "^1.56.0",
+    "oxlint": "^1.59.0",
     "typescript": "^5.9.3"
   }
 }
