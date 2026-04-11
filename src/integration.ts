@@ -10,6 +10,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
 import type { DocsThemeConfig, SiteConfig } from "./types";
+import { generateScopedName, transitiveCssPlugin } from "./utils/cssModules";
 import { fonts } from "./utils/fonts";
 import { deriveBase, deriveGitHubPagesSite, getGithubUrl } from "./utils/github";
 
@@ -198,6 +199,7 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
           },
           vite: {
             css: {
+              modules: { generateScopedName },
               postcss: {
                 plugins: [
                   postcssPresetEnv({
@@ -238,6 +240,7 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
                   return undefined;
                 },
               },
+              transitiveCssPlugin(),
             ],
           },
         });
