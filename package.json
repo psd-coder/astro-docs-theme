@@ -1,9 +1,14 @@
 {
   "name": "astro-pigment",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "packageManager": "pnpm@10.33.0",
   "type": "module",
-  "files": ["src", "stylelint.config.js", ".browserslistrc", "README.md"],
+  "files": [
+    "src",
+    "stylelint.config.js",
+    ".browserslistrc",
+    "README.md"
+  ],
   "scripts": {
     "bump": "bash scripts/bump.sh",
     "typecheck": "tsc --noEmit",
