@@ -63,13 +63,13 @@ export type DocsThemeConfig = SiteConfig & {
   fonts?: boolean;
   /** CSS files to inject into every page. Paths relative to project root. */
   customCss?: string[];
-  /** Header navigation links. Hrefs may be relative ("api") or absolute ("/api"). */
-  navLinks?: NavItem[];
   docs?: {
     /** Default: "src/content/docs". */
     directory?: string;
     /** Auto-inject the default [...slug] page. Default: true. */
     renderDefaultPage?: boolean;
+    /** Header navigation links. Hrefs may be relative ("api") or absolute ("/api"). */
+    navLinks?: NavItem[];
   };
   meta?: {
     /** HTML lang attribute. Default: "en". */

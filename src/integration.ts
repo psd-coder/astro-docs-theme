@@ -57,7 +57,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
     directory: config.docs?.directory ?? "src/content/docs",
   };
   const renderDefaultPage = config.docs?.renderDefaultPage ?? true;
-  const navLinks = config.navLinks ?? [];
+  const navLinks = config.docs?.navLinks ?? [];
   const shikiConfig = config.shikiThemes
     ? { themes: config.shikiThemes }
     : { theme: adaptiveCodeTheme };

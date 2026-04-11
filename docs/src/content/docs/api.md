@@ -76,12 +76,6 @@ docsTheme({
   // Optional: syntax highlighting themes (overrides adaptive hue-based theme)
   shikiThemes: { light: "github-light", dark: "github-dark" },
 
-  // Optional: header navigation links (href accepts "/api" or "api")
-  navLinks: [
-    { href: "/", label: "Overview" },
-    { href: "/api", label: "API" },
-  ],
-
   // Optional: enable Astro ViewTransitions. Default: true.
   // clientRouter: false,
 
@@ -92,6 +86,11 @@ docsTheme({
   docs: {
     directory: "src/content/docs", // default; also controls defineDocsCollections() glob base
     renderDefaultPage: true,       // default; set false to ship your own [...slug].astro
+    // Optional: header navigation links (href accepts "/api" or "api")
+    navLinks: [
+      { href: "/", label: "Overview" },
+      { href: "/api", label: "API" },
+    ],
   },
 })
 ```

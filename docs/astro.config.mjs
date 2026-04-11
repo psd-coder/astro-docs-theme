@@ -23,12 +23,14 @@ export default defineConfig({
       },
       huePicker: true,
       search: true,
-      navLinks: [
-        { href: "/", label: "Overview" },
-        { href: "/api", label: "API" },
-        { href: "/components", label: "Components" },
-        { href: "/theme-preview", label: "Theme Preview" },
-      ],
+      docs: {
+        navLinks: [
+          { href: "/", label: "Overview" },
+          { href: "/api", label: "API" },
+          { href: "/components", label: "Components" },
+          { href: "/theme-preview", label: "Theme Preview" },
+        ],
+      },
     }),
   ],
 });

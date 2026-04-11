@@ -18,17 +18,17 @@ import { Layout } from "astro-pigment/components";
 ---
 <Layout
   title="Page Title"
-  navItems={[{ href: "", label: "Home" }, { href: "api", label: "API" }]}
+  navLinks={[{ href: "", label: "Home" }, { href: "api", label: "API" }]}
 >
   <MyLogo slot="logo" />
   <meta slot="head-extra" name="robots" content="noindex" />
-  <TableOfContents slot="sidebar" headings={headings} itemsSelector=".prose :is(h2, h3)[id]" />
+  <TableOfContents slot="sidebar" headings={headings} />
   <article class="prose"><slot /></article>
   <span slot="footer-extra">& Additional Credit</span>
 </Layout>
 ```
 
-Props: `title` (required), `navItems?` (array of `{ href, label }`).
+Props: `title` (required), `navLinks?` (array of `{ href, label }`).
 Slots: `default`, `sidebar`, `logo`, `head-extra`, `footer-extra`.
 
 ### TableOfContents
@@ -40,11 +40,13 @@ Desktop sidebar with scroll-spy highlighting + mobile popover trigger. Both rend
 import { TableOfContents } from "astro-pigment/components";
 const headings = await getHeadings(); // from Astro content render
 ---
-<TableOfContents
-  slot="sidebar"
-  headings={headings}
-  itemsSelector="[data-content] :is(h2, h3)[id]"
-/>
+<TableOfContents slot="sidebar" headings={headings} />
+```
+
+Default `itemsSelector` is `"#content :is(h2, h3)[id]"`, targeting the `id="content"` article injected by the default page. Pass a custom selector if your layout differs:
+
+```astro
+<TableOfContents slot="sidebar" headings={headings} itemsSelector="#my-content :is(h2, h3)[id]" />
 ```
 
 ### Button
