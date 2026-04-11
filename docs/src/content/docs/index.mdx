@@ -25,7 +25,7 @@ Add the theme as a GitHub dependency along with its peer dependencies:
 // package.json
 {
   "dependencies": {
-    "@psd-coder/astro-pigment": "github:psd-coder/astro-pigment",
+    "astro-pigment": "github:psd-coder/astro-pigment",
     "astro": "^6.0.0",
     "nanotags": "^0.14.0",
     "nanostores": "^1.0.0"
@@ -46,7 +46,7 @@ pnpm install
 ```js
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import docsTheme from "@psd-coder/astro-pigment";
+import docsTheme from "astro-pigment";
 
 export default defineConfig({
   integrations: [
@@ -75,12 +75,12 @@ export default defineConfig({
 
 ```ts
 // src/content.config.ts
-import { defineDocsCollections } from "@psd-coder/astro-pigment/content";
+import { defineDocsCollections } from "astro-pigment/content";
 
 export const collections = defineDocsCollections();
 ```
 
-Drop `.md`/`.mdx` files into `src/content/docs/`. The integration injects `/[...slug]` automatically — pages render with the layout, TOC, prev/next navigation, and edit-on-github link out of the box. To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro` (reuse `getDocsStaticPaths` from `@psd-coder/astro-pigment/utils/content` to skip the boilerplate).
+Drop `.md`/`.mdx` files into `src/content/docs/`. The integration injects `/[...slug]` automatically — pages render with the layout, TOC, prev/next navigation, and edit-on-github link out of the box. To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro` (reuse `getDocsStaticPaths` from `astro-pigment/utils/content` to skip the boilerplate).
 
 Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, LLM endpoints, and footer are all wired up automatically.
 

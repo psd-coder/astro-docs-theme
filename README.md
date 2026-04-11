@@ -1,4 +1,4 @@
-# @psd-coder/astro-pigment
+# astro-pigment
 
 An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO endpoints. One integration call gives you a complete docs site: layout, navigation, table of contents, code highlighting, LLM-friendly endpoints, and a library of interactive components.
 
@@ -22,7 +22,7 @@ Add the theme as a GitHub dependency along with its peer dependencies:
 // package.json
 {
   "dependencies": {
-    "@psd-coder/astro-pigment": "github:psd-coder/astro-pigment",
+    "astro-pigment": "github:psd-coder/astro-pigment",
     "astro": "^6.0.0",
     "nanotags": "^0.14.0",
     "nanostores": "^1.0.0"
@@ -41,7 +41,7 @@ pnpm install
 ```js
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import docsTheme from "@psd-coder/astro-pigment";
+import docsTheme from "astro-pigment";
 
 export default defineConfig({
   integrations: [
@@ -65,14 +65,14 @@ export default defineConfig({
 
 ```ts
 // src/content.config.ts
-import { defineDocsCollections } from "@psd-coder/astro-pigment/content";
+import { defineDocsCollections } from "astro-pigment/content";
 
 export const collections = defineDocsCollections();
 ```
 
 Drop your `.md`/`.mdx` files in `src/content/docs/`. The integration injects `/[...slug]` automatically; pages render with the full layout, TOC, prev/next navigation, and edit-on-github link out of the box. Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, and LLM endpoints are all wired up automatically.
 
-To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro`. Reuse the boilerplate via `getDocsStaticPaths` from `@psd-coder/astro-pigment/utils/content`.
+To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro`. Reuse the boilerplate via `getDocsStaticPaths` from `astro-pigment/utils/content`.
 
 ### Pick a theme hue (optional)
 
@@ -151,7 +151,7 @@ type DocsThemeConfig = {
 
 ### Core
 
-Import from `@psd-coder/astro-pigment/components`:
+Import from `astro-pigment/components`:
 
 **Layout** -- full page shell: sticky header, sidebar, footer, code copy buttons. Config read from virtual module. Includes ThemeToggle, ThemeScript, CodeBlockWrapper automatically.
 
@@ -215,7 +215,7 @@ Props: `title`, `navItems?`. Slots: `default`, `sidebar`, `logo`, `head-extra`, 
 
 ### Playground
 
-Import from `@psd-coder/astro-pigment/components/playground`:
+Import from `astro-pigment/components/playground`:
 
 **CodeEditor** -- CodeMirror 6 with adaptive hue-based theme synced to dark mode.
 
@@ -276,21 +276,21 @@ The integration auto-injects bundled Martian Grotesk (variable weight) and Marti
 
 ## Stores
 
-Available from `@psd-coder/astro-pigment/stores/theme` and `@psd-coder/astro-pigment/stores/media`:
+Available from `astro-pigment/stores/theme` and `astro-pigment/stores/media`:
 
 ```ts
-import { $themeSetting, $resolvedTheme, cycleTheme } from "@psd-coder/astro-pigment/stores/theme";
-import { $prefersDarkScheme, $prefersReducedMotion } from "@psd-coder/astro-pigment/stores/media";
+import { $themeSetting, $resolvedTheme, cycleTheme } from "astro-pigment/stores/theme";
+import { $prefersDarkScheme, $prefersReducedMotion } from "astro-pigment/stores/media";
 ```
 
 - `$themeSetting`: persistent atom (`"auto"` | `"light"` | `"dark"`)
 - `$resolvedTheme`: computed (`"light"` | `"dark"`)
 - `cycleTheme()`: cycles auto -> light -> dark
 
-Package manager store (from `@psd-coder/astro-pigment/stores/pkgManager`):
+Package manager store (from `astro-pigment/stores/pkgManager`):
 
 ```ts
-import { $pkgManager } from "@psd-coder/astro-pigment/stores/pkgManager";
+import { $pkgManager } from "astro-pigment/stores/pkgManager";
 
 $pkgManager.get() // "pnpm" | "npm" | "yarn" | "bun"
 ```
@@ -298,8 +298,8 @@ $pkgManager.get() // "pnpm" | "npm" | "yarn" | "bun"
 Used by `InstallPackage` internally. Also available for custom `CodePanels`-based tab switchers via `defineCodePanels`:
 
 ```ts
-import { defineCodePanels } from "@psd-coder/astro-pigment/utils/defineCodePanels";
-import { $pkgManager } from "@psd-coder/astro-pigment/stores/pkgManager";
+import { defineCodePanels } from "astro-pigment/utils/defineCodePanels";
+import { $pkgManager } from "astro-pigment/stores/pkgManager";
 
 defineCodePanels("x-my-switcher", $pkgManager);
 ```
@@ -348,7 +348,7 @@ For sites with interactive code examples, import the content collection loader:
 
 ```ts
 // content.config.ts
-import { examplesLoader } from "@psd-coder/astro-pigment/loaders/examples";
+import { examplesLoader } from "astro-pigment/loaders/examples";
 
 const examples = defineCollection({
   loader: examplesLoader("src/content/examples/"),
@@ -371,12 +371,12 @@ The loader parses `.html` files with `data-type` attributes into `FileEntry` arr
 
 ```js
 // stylelint.config.js
-export default { extends: ["@psd-coder/astro-pigment/stylelint.config"] };
+export default { extends: ["astro-pigment/stylelint.config"] };
 ```
 
 ```
 // .browserslistrc
-extends @psd-coder/astro-pigment/browserslist
+extends astro-pigment/browserslist
 ```
 
 ## License

@@ -1,5 +1,5 @@
 {
-  "name": "@psd-coder/astro-pigment",
+  "name": "astro-pigment",
   "version": "0.1.0",
   "packageManager": "pnpm@10.33.0",
   "type": "module",

@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import docsTheme from "@psd-coder/astro-pigment";
+import docsTheme from "astro-pigment";
 
 export default defineConfig({
   integrations: [

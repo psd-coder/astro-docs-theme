@@ -1,3 +1,3 @@
-import { defineDocsCollections } from "@psd-coder/astro-pigment/content";
+import { defineDocsCollections } from "astro-pigment/content";
 
 export const collections = defineDocsCollections();

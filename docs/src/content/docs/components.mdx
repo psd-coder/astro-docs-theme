@@ -6,7 +6,7 @@ order: 3
 
 ## Core
 
-Import from `@psd-coder/astro-pigment/components`:
+Import from `astro-pigment/components`:
 
 ### Layout
 
@@ -14,7 +14,7 @@ Main page shell. Renders sticky header with navigation, sidebar slot, content ar
 
 ```astro
 ---
-import { Layout } from "@psd-coder/astro-pigment/components";
+import { Layout } from "astro-pigment/components";
 ---
 <Layout
   title="Page Title"
@@ -37,7 +37,7 @@ Desktop sidebar with scroll-spy highlighting + mobile popover trigger. Both rend
 
 ```astro
 ---
-import { TableOfContents } from "@psd-coder/astro-pigment/components";
+import { TableOfContents } from "astro-pigment/components";
 const headings = await getHeadings(); // from Astro content render
 ---
 <TableOfContents
@@ -53,7 +53,7 @@ Styled `<button>` with an optional `square` prop for icon-only buttons.
 
 ```astro
 ---
-import { Button } from "@psd-coder/astro-pigment/components";
+import { Button } from "astro-pigment/components";
 ---
 <Button>Click me</Button>
 <Button square aria-label="Settings"><Icon name="list" /></Button>
@@ -65,7 +65,7 @@ Built-in SVG icons: `check`, `chevron-left`, `copy`, `github`, `list`, `markdown
 
 ```astro
 ---
-import { Icon } from "@psd-coder/astro-pigment/components";
+import { Icon } from "astro-pigment/components";
 ---
 <Icon name="github" />
 <Icon name="github" size={32} />
@@ -80,7 +80,7 @@ Site footer with license, GitHub, and author links. Read from the virtual config
 
 ```astro
 ---
-import { Footer } from "@psd-coder/astro-pigment/components";
+import { Footer } from "astro-pigment/components";
 ---
 <Footer />
 ```
@@ -91,7 +91,7 @@ Three-state theme switcher (auto/light/dark) with sun/moon/split icons.
 
 ```astro
 ---
-import { ThemeToggle } from "@psd-coder/astro-pigment/components";
+import { ThemeToggle } from "astro-pigment/components";
 ---
 <ThemeToggle />
 ```
@@ -110,7 +110,7 @@ Tabbed package manager switcher (pnpm/npm/yarn/bun). Selection persists to local
 
 ```astro
 ---
-import { InstallPackage } from "@psd-coder/astro-pigment/components";
+import { InstallPackage } from "astro-pigment/components";
 ---
 <InstallPackage pkg="nanotags nanostores" />
 <InstallPackage pkg="typescript" dev />
@@ -122,7 +122,7 @@ Previous/next page navigation links.
 
 ```astro
 ---
-import { PrevNextNav } from "@psd-coder/astro-pigment/components";
+import { PrevNextNav } from "astro-pigment/components";
 ---
 <PrevNextNav
   prev={{ title: "Getting Started", href: "/getting-started" }}
@@ -136,14 +136,14 @@ Heading row with a "view as markdown" icon link.
 
 ```astro
 ---
-import { PageHeading } from "@psd-coder/astro-pigment/components";
+import { PageHeading } from "astro-pigment/components";
 ---
 <PageHeading title="API Reference" href="/api.md" />
 ```
 
 ## Playground
 
-Import from `@psd-coder/astro-pigment/components/playground`:
+Import from `astro-pigment/components/playground`:
 
 ### CodeEditor
 
@@ -151,7 +151,7 @@ CodeMirror 6 editor with Catppuccin themes that sync with dark mode. Supports Ja
 
 ```astro
 ---
-import { CodeEditor } from "@psd-coder/astro-pigment/components/playground";
+import { CodeEditor } from "astro-pigment/components/playground";
 ---
 <CodeEditor lang="javascript" />
 ```
@@ -162,7 +162,7 @@ Sandboxed iframe execution. Captures console output and posts it back to the par
 
 ```astro
 ---
-import { LivePreview } from "@psd-coder/astro-pigment/components/playground";
+import { LivePreview } from "astro-pigment/components/playground";
 ---
 <LivePreview />
 ```
@@ -173,7 +173,7 @@ Full interactive playground: tabbed editor + live preview + collapsible logs.
 
 ```astro
 ---
-import { CodeExample } from "@psd-coder/astro-pigment/components/playground";
+import { CodeExample } from "astro-pigment/components/playground";
 const files = [
   { name: "index.html", type: "html", lang: "html", content: "<h1>Hello</h1>" },
   { name: "app.js", type: "javascript", lang: "javascript", content: "console.log('hi')" },
@@ -188,7 +188,7 @@ Multiple code snippets with Shiki highlighting and tab switching.
 
 ```astro
 ---
-import { CodePanels } from "@psd-coder/astro-pigment/components/playground";
+import { CodePanels } from "astro-pigment/components/playground";
 const items = [
   { id: "pnpm", content: "pnpm add my-lib" },
   { id: "npm", content: "npm install my-lib" },
@@ -203,7 +203,7 @@ Draggable split-pane layout with keyboard support. Supports horizontal and verti
 
 ```astro
 ---
-import { ResizablePanes, ResizablePane } from "@psd-coder/astro-pigment/components/playground";
+import { ResizablePanes, ResizablePane } from "astro-pigment/components/playground";
 ---
 <ResizablePanes direction="horizontal">
   <ResizablePane>Left content</ResizablePane>
@@ -217,7 +217,7 @@ Expandable/collapsible section with an optional resize handle.
 
 ```astro
 ---
-import { CollapsiblePane } from "@psd-coder/astro-pigment/components/playground";
+import { CollapsiblePane } from "astro-pigment/components/playground";
 ---
 <CollapsiblePane expanded expandedSize={30}>
   <span slot="header">Details</span>
@@ -231,7 +231,7 @@ Accessible tabs with roving focus, scroll arrows for overflow, and keyboard navi
 
 ```astro
 ---
-import { Tabs, Tab } from "@psd-coder/astro-pigment/components/playground";
+import { Tabs, Tab } from "astro-pigment/components/playground";
 ---
 <Tabs value="one">
   <Tab value="one">First</Tab>

@@ -63,7 +63,7 @@ export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
 `;
 
   return {
-    name: "@psd-coder/astro-pigment",
+    name: "astro-pigment",
     hooks: {
       "astro:config:setup": ({ config: astroConfig, updateConfig, injectRoute }) => {
         const site = config.site ?? deriveGitHubPagesSite(config.project.github);
