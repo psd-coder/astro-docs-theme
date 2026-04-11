@@ -2,6 +2,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import type { AstroIntegration } from "astro";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import postcssPresetEnv from "postcss-preset-env";
@@ -211,6 +212,21 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
               },
             },
             plugins: [
+              {
+                // Resolve 'sharp' to its absolute path for SSR/prerender so the
+                // emitted chunks use an absolute import that bypasses pnpm isolation.
+                name: "astro-pigment-sharp-resolve",
+                resolveId(
+                  id: string,
+                  _importer: string | undefined,
+                  opts: { ssr?: boolean } | undefined,
+                ) {
+                  if (id === "sharp" && opts?.ssr) {
+                    return { id: createRequire(import.meta.url).resolve("sharp"), external: true };
+                  }
+                  return undefined;
+                },
+              },
               {
                 name: "docs-theme-virtual-config",
                 resolveId(id: string) {
