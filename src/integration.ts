@@ -39,7 +39,11 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
     ? { themes: config.shikiThemes }
     : { theme: adaptiveCodeTheme };
 
-  const iconPath = config.icon ? path.resolve(config.icon) : null;
+  const faviconSource = typeof config.icon === "string" ? config.icon : config.icon?.favicon;
+  const manifestIconSource = typeof config.icon === "string" ? config.icon : config.icon?.manifest;
+  const faviconPath = faviconSource ? path.resolve(faviconSource) : null;
+  const manifestIconPath = manifestIconSource ? path.resolve(manifestIconSource) : null;
+  const hasIcon = faviconPath !== null || manifestIconPath !== null;
 
   const hueSlider = config.hueSlider ?? false;
   const clientRouter = config.clientRouter ?? true;
@@ -49,7 +53,8 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
 export const siteConfig = ${JSON.stringify(siteConfig)};
 export const githubUrl = ${JSON.stringify(githubUrl)};
 export const docsConfig = ${JSON.stringify(docsConfig)};
-export const iconPath = ${JSON.stringify(iconPath)};
+export const faviconPath = ${JSON.stringify(faviconPath)};
+export const manifestIconPath = ${JSON.stringify(manifestIconPath)};
 export const hueSlider = ${JSON.stringify(hueSlider)};
 export const clientRouter = ${JSON.stringify(clientRouter)};
 export const search = ${JSON.stringify(search)};
@@ -99,7 +104,7 @@ export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
           });
         }
 
-        if (iconPath) {
+        if (hasIcon) {
           injectRoute({
             pattern: "/site.webmanifest",
             entrypoint: path.resolve(__dirname, "pages/site.webmanifest.ts"),

@@ -16,7 +16,10 @@ export default defineConfig({
         github: { user: "psd-coder", repository: "astro-pigment" },
       },
       author: { name: "Pavel Grinchenko", url: "https://x.com/psd_coder" },
-      icon: "src/assets/icon.svg",
+      icon: {
+        favicon: "src/assets/astro-pigment-favicon.svg",
+        manifest: "src/assets/astro-pigment.svg",
+      },
       hueSlider: true,
       search: true,
       navLinks: [

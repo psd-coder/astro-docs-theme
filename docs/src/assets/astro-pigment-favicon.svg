@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+  <style>
+    #a { fill: #310c4d; }
+    @media (prefers-color-scheme: dark) { #a { fill: #ffffff; } }
+  </style>
+  <path fill="url(#c)" d="M16 1C7.7157 1 1 7.7157 1 16s6.7157 15 15 15 15-6.7157 15-15S24.2843 1 16 1m0 6.25c4.8325 0 8.75 3.9175 8.75 8.75s-3.9175 8.75-8.75 8.75S7.25 20.8325 7.25 16 11.1675 7.25 16 7.25"/>
+  <path id="a" d="M21.194 21.625 18.44 9.385h-4.716l-2.754 12.24h2.484l.486-2.214h4.284l.486 2.214zm-4.68-10.188 1.242 5.814h-3.348l1.242-5.814z"/>
+  <defs>
+    <linearGradient id="c" x1="10.4206" x2="21.6184" y1="2.3906" y2="30.385" gradientUnits="userSpaceOnUse">
+      <stop offset=".0139" stop-color="#05a7aa"/>
+      <stop offset=".2334" stop-color="#9248dc"/>
+      <stop offset=".498" stop-color="#f95070"/>
+      <stop offset=".7286" stop-color="#e3b407"/>
+      <stop offset="1" stop-color="#86cf16"/>
+    </linearGradient>
+  </defs>
+</svg>

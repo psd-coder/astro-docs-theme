@@ -38,9 +38,15 @@ docsTheme({
   // Optional: override auto-derived GitHub Pages URL
   site: "https://custom-domain.com",
 
-  // Optional: path to a 512x512 PNG or SVG icon
-  // Generates favicons, apple-touch-icon, webmanifest automatically
+  // Optional: source icon(s) for favicons, apple-touch-icon, and webmanifest.
+  // String form: single 512x512 PNG/SVG used for all sizes.
   icon: "src/assets/icon.svg",
+  // Object form: separate sources. `favicon` is used for tiny renders
+  // (favicon.svg, favicon.ico); `manifest` is used for 96px and up.
+  // icon: {
+  //   favicon: "src/assets/favicon.svg",
+  //   manifest: "src/assets/icon-detailed.svg",
+  // },
 
   // Optional: show hue slider in header to pick a theme hue.
   // Use it to find the right value, then set --theme-hue-override and remove this.
@@ -203,17 +209,30 @@ Docs are sorted by the `order` field in frontmatter. Frontmatter and import stat
 
 ## Favicon and Webmanifest
 
-When `icon` is configured, the integration auto-generates from a single source image:
+`icon` accepts either a single source path or an object with two sources:
 
-| File | Size/Format |
-|------|-------------|
-| `/favicon.svg` | Passthrough (SVG source only) |
-| `/favicon.ico` | Multi-size ICO (16x16 + 32x32) |
-| `/favicon-96x96.png` | 96x96 PNG |
-| `/apple-touch-icon.png` | 180x180 PNG |
-| `/web-app-manifest-192x192.png` | 192x192 PNG |
-| `/web-app-manifest-512x512.png` | 512x512 PNG |
-| `/site.webmanifest` | JSON manifest with project name and icon refs |
+```js
+// Single source (same icon for all sizes)
+icon: "src/assets/icon.svg",
+
+// Two sources — simplified design for tiny favicons, detailed for manifest
+icon: {
+  favicon: "src/assets/favicon.svg",
+  manifest: "src/assets/icon-detailed.svg",
+},
+```
+
+Use the object form when a detailed 512x512 design becomes illegible at 16-32px. Both `favicon` and `manifest` are required in the object form.
+
+| File | Source | Size/Format |
+|------|--------|-------------|
+| `/favicon.svg` | `favicon` | Passthrough (SVG source only) |
+| `/favicon.ico` | `favicon` | 32x32 ICO |
+| `/favicon-96x96.png` | `manifest` | 96x96 PNG |
+| `/apple-touch-icon.png` | `manifest` | 180x180 PNG |
+| `/web-app-manifest-192x192.png` | `manifest` | 192x192 PNG |
+| `/web-app-manifest-512x512.png` | `manifest` | 512x512 PNG |
+| `/site.webmanifest` | — | JSON manifest with project name and icon refs |
 
 The Layout `<head>` renders the corresponding `<link>` tags only when `icon` is set. Uses `sharp` for image resizing (bundled with the theme).
 

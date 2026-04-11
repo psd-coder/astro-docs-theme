@@ -1,7 +1,7 @@
 ---
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
-import { clientRouter, githubUrl, hueSlider, iconPath, search, siteConfig } from "virtual:theme-integration-config";
+import { clientRouter, faviconPath, githubUrl, hueSlider, manifestIconPath, search, siteConfig } from "virtual:theme-integration-config";
 import "../../styles/index.css";
 import type { NavItem } from "../../types";
 import { getHref, isActiveHref } from "../../utils/urls";
@@ -36,11 +36,15 @@ const authorIcon = getAuthorIcon();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href={getHref("")} />
-  {iconPath && (
+  {faviconPath && (
     <>
-      <link rel="icon" type="image/svg+xml" href={getHref("favicon.svg")} />
+      <link rel="icon" href={getHref("favicon.ico")} sizes="32x32"/>
+      <link rel="icon" type="image/svg+xml" href={getHref("favicon.svg")} sizes="any" />
+    </>
+  )}
+  {manifestIconPath && (
+    <>
       <link rel="icon" type="image/png" href={getHref("favicon-96x96.png")} sizes="96x96" />
-      <link rel="shortcut icon" href={getHref("favicon.ico")} />
       <link rel="apple-touch-icon" sizes="180x180" href={getHref("apple-touch-icon.png")} />
       <link rel="manifest" href={getHref("site.webmanifest")} />
     </>

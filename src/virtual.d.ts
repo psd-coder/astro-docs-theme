@@ -33,7 +33,8 @@ declare module "virtual:theme-integration-config" {
     pattern: string;
     deepSections: string[];
   };
-  export const iconPath: string | null;
+  export const faviconPath: string | null;
+  export const manifestIconPath: string | null;
   export const hueSlider: boolean;
   export const clientRouter: boolean;
   export const search: boolean;

@@ -38,8 +38,13 @@ export type SiteConfig = {
 
 export type DocsThemeConfig = SiteConfig & {
   site?: string;
-  /** Path to a 512x512 PNG or SVG icon. Generates favicons, apple-touch-icon, webmanifest icons. */
-  icon?: string;
+  /**
+   * Source icon(s) for favicons, apple-touch-icon, and webmanifest icons.
+   * String: single 512x512 PNG/SVG used for all sizes.
+   * Object: separate sources — `favicon` for tiny renders (favicon.svg/ico),
+   * `manifest` for 96px and up (apple-touch, web-app-manifest).
+   */
+  icon?: string | { favicon: string; manifest: string };
   /** Show hue slider in header for interactive theme color customization. */
   hueSlider?: boolean;
   /** Enable Astro View Transitions via ClientRouter. Default: true. */

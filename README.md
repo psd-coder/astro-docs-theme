@@ -9,7 +9,7 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 - **CSS variable theming**: override `--theme-hue-override` or `--layout-width-override` in plain CSS, no config options needed
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
-- **Auto-generated favicons**: provide a single 512x512 icon, get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
+- **Auto-generated favicons**: provide one or two source icons (simplified favicon + detailed manifest), get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
 - **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
 - **Accessible**: roving focus, ARIA attributes, keyboard navigation throughout
 - **Zero build step**: Astro resolves `.astro`/`.ts` source directly from the package
@@ -315,14 +315,29 @@ When `docs` is configured, the integration auto-generates:
 
 ## Favicon & Webmanifest
 
-When `icon` is configured (path to a 512x512 PNG or SVG), the integration auto-generates:
+`icon` accepts either a single source path or an object with two sources:
 
-- `/favicon.svg` (passthrough for SVG source)
-- `/favicon.ico` (multi-size: 16x16 + 32x32)
-- `/favicon-96x96.png`
-- `/apple-touch-icon.png` (180x180)
-- `/web-app-manifest-192x192.png`
-- `/web-app-manifest-512x512.png`
+```js
+// single source (same icon for all sizes)
+icon: "src/assets/icon.svg",
+
+// two sources — simplified design for tiny favicons, detailed for manifest
+icon: {
+  favicon: "src/assets/favicon.svg",      // used for /favicon.svg and /favicon.ico (16-32px)
+  manifest: "src/assets/icon-detailed.svg", // used for 96px and up
+}
+```
+
+Use the object form when a 512x512 design has fine details that become illegible at 16-32px. Both fields are required in the object form.
+
+Generated routes:
+
+- `/favicon.svg` — from `favicon` source (passthrough for SVG)
+- `/favicon.ico` — from `favicon` source (32x32)
+- `/favicon-96x96.png` — from `manifest` source
+- `/apple-touch-icon.png` — from `manifest` source (180x180)
+- `/web-app-manifest-192x192.png` — from `manifest` source
+- `/web-app-manifest-512x512.png` — from `manifest` source
 - `/site.webmanifest`
 
 Layout renders the corresponding `<link>` tags only when `icon` is set.
