@@ -70,8 +70,6 @@ export type DocsThemeConfig = SiteConfig & {
     directory?: string;
     /** Auto-inject the default [...slug] page. Default: true. */
     renderDefaultPage?: boolean;
-    /** TOC active-item selector used by the default page. Default: ".prose :is(h2, h3)[id]". */
-    tocItemsSelector?: string;
   };
   meta?: {
     /** HTML lang attribute. Default: "en". */

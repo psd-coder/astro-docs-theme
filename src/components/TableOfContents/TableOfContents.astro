@@ -7,10 +7,10 @@ import { type Heading } from "./utils";
 
 type Props = {
   headings: Heading[];
-  itemsSelector: string;
+  itemsSelector?: string;
 };
 
-const { headings, itemsSelector } = Astro.props;
+const { headings, itemsSelector = "#content :is(h2, h3)[id]" } = Astro.props;
 ---
 
 {/* Desktop sidebar */}

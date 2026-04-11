@@ -92,7 +92,6 @@ docsTheme({
   docs: {
     directory: "src/content/docs", // default; also controls defineDocsCollections() glob base
     renderDefaultPage: true,       // default; set false to ship your own [...slug].astro
-    tocItemsSelector: ".prose :is(h2, h3)[id]", // default
   },
 })
 ```

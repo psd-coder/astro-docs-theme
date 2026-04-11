@@ -57,7 +57,6 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
     directory: config.docs?.directory ?? "src/content/docs",
   };
   const renderDefaultPage = config.docs?.renderDefaultPage ?? true;
-  const tocItemsSelector = config.docs?.tocItemsSelector ?? ".prose :is(h2, h3)[id]";
   const navLinks = config.navLinks ?? [];
   const shikiConfig = config.shikiThemes
     ? { themes: config.shikiThemes }
@@ -88,7 +87,7 @@ export const huePicker = ${JSON.stringify(huePicker)};
 export const clientRouter = ${JSON.stringify(clientRouter)};
 export const search = ${JSON.stringify(search)};
 export const navLinks = ${JSON.stringify(navLinks)};
-export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
+
 export const logo = ${JSON.stringify(logo)};
 export const lang = ${JSON.stringify(lang)};
 export const titleSuffix = ${JSON.stringify(titleSuffix)};
