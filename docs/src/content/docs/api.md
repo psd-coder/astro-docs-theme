@@ -23,11 +23,13 @@ docsTheme({
     },
   },
 
-  // Required: author link in header/footer
+  // Optional: author link in header/footer. Omit to render no author.
   author: {
     name: "Your Name",
     url: "https://x.com/your_handle",
-    // icon auto-detected: "x" for x.com URLs, generic link otherwise
+    // icon: raw SVG markup rendered inline. Overrides the x.com auto-icon
+    // when set, and is required when url is not an x.com URL.
+    // icon: '<svg width="20" height="20" viewBox="0 0 24 24"><path d="..." /></svg>',
   },
 
   // Optional: additional credits rendered as "& Name" after author in footer

@@ -6,6 +6,7 @@ export type IconName =
   | "list"
   | "markdown"
   | "search"
+  | "close"
   | "x"
   | "custom";
 
@@ -25,10 +26,11 @@ export type SiteConfig = {
       repository: string;
     };
   };
-  author: {
+  author?: {
     name: string;
     url: string;
-    icon?: IconName;
+    /** Required when url is not an x.com URL. Raw SVG markup rendered inline. */
+    icon?: string;
   };
   credits?: Array<{
     name: string;

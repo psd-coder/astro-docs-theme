@@ -10,7 +10,7 @@ declare module "virtual:theme-integration-config" {
       description: string;
       license: { name: string; url: string };
     };
-    author: {
+    author?: {
       name: string;
       url: string;
       icon?: string;

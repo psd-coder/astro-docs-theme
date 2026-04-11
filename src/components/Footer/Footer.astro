@@ -16,10 +16,14 @@ const { class: className } = Astro.props;
     <a class={styles.link} href={githubUrl}>GitHub</a>
   </div>
   <div class={styles.block}>
-    <span class={styles.dimmed}>by</span> <a class={styles.link} href={siteConfig.author.url}>{siteConfig.author.name}</a>
-    {siteConfig.credits?.map((credit) => (
+    {siteConfig.author && (
       <>
-        <span class={styles.dimmed}>&amp;</span>
+        <span class={styles.dimmed}>by</span> <a class={styles.link} href={siteConfig.author.url}>{siteConfig.author.name}</a>
+      </>
+    )}
+    {siteConfig.credits?.map((credit, i) => (
+      <>
+        {(siteConfig.author || i > 0) && <span class={styles.dimmed}>&amp;</span>}
         <a class={styles.link} href={credit.url}>{credit.name}</a>
       </>
     ))}

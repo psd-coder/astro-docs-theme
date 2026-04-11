@@ -16,6 +16,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VIRTUAL_MODULE_ID = "virtual:theme-integration-config";
 const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`;
 
+function validateAuthor(author: DocsThemeConfig["author"]): void {
+  if (!author) return;
+  if (author.url.includes("x.com")) return;
+  if (!author.icon) {
+    throw new Error(
+      `[astro-pigment] author.icon is required when author.url is not an x.com URL. ` +
+        `Got author.url="${author.url}". Provide raw SVG markup for author.icon.`,
+    );
+  }
+}
+
 function extractSiteConfig(config: DocsThemeConfig): SiteConfig {
   return {
     project: config.project,
@@ -25,11 +36,11 @@ function extractSiteConfig(config: DocsThemeConfig): SiteConfig {
 }
 
 export function createIntegration(config: DocsThemeConfig): AstroIntegration {
+  validateAuthor(config.author);
   const githubUrl = getGithubUrl(config.project.github);
   const siteConfig = extractSiteConfig(config);
   const docsConfig = {
     directory: config.docs?.directory ?? "src/content/docs",
-    pattern: config.docs?.pattern ?? "**/*.{md,mdx}",
     deepSections: config.docs?.deepSections ?? [],
   };
   const renderDefaultPage = config.docs?.renderDefaultPage ?? true;

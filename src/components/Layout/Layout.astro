@@ -21,13 +21,7 @@ type Props = {
 
 const { title, navItems } = Astro.props;
 
-function getAuthorIcon(): "x" | "custom" {
-  if (siteConfig.author.icon) return siteConfig.author.icon as "x" | "custom";
-  if (siteConfig.author.url.includes("x.com")) return "x";
-  return "custom";
-}
-
-const authorIcon = getAuthorIcon();
+const author = siteConfig.author;
 ---
 
 <!DOCTYPE html>
@@ -85,15 +79,13 @@ const authorIcon = getAuthorIcon();
       <div class:list={[styles.links, styles.extraNav]} role="menubar" focusgroup="wrap">
         {search && <Search />}
         <ThemeToggle role="menuitem" />
-        {authorIcon === "x" ? (
-          <a href={siteConfig.author.url} class:list={[styles.link, styles.square]} aria-label={siteConfig.author.name} role="menuitem">
-            <Icon name="twitter" />
-          </a>
-        ) : (
-          <a href={siteConfig.author.url} class:list={[styles.link, styles.square]} aria-label={siteConfig.author.name} role="menuitem">
-            <slot name="author-icon">
-              <Icon name="github" />
-            </slot>
+        {author && (
+          <a href={author.url} class:list={[styles.link, styles.square]} aria-label={author.name} role="menuitem">
+            {author.icon ? (
+              <Fragment set:html={author.icon} />
+            ) : author.url.includes("x.com") ? (
+              <Icon name="x" />
+            ) : null}
           </a>
         )}
         <a href={githubUrl} class:list={[styles.link, styles.square]} aria-label="GitHub" role="menuitem">
