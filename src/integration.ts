@@ -76,7 +76,7 @@ export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
   return {
     name: "astro-pigment",
     hooks: {
-      "astro:config:setup": ({ config: astroConfig, updateConfig, injectRoute }) => {
+      "astro:config:setup": ({ config: astroConfig, updateConfig, injectRoute, injectScript }) => {
         const site = config.site ?? deriveGitHubPagesSite(config.project.github);
         const base = config.site ? "/" : deriveBase(config.project.github);
 
@@ -100,6 +100,11 @@ export const tocItemsSelector = ${JSON.stringify(tocItemsSelector)};
           pattern: "/[...slug].md",
           entrypoint: path.resolve(__dirname, "pages/[...slug].md.ts"),
         });
+
+        for (const cssPath of config.customCss ?? []) {
+          const resolved = path.resolve(fileURLToPath(astroConfig.root), cssPath);
+          injectScript("page-ssr", `import ${JSON.stringify(resolved)};`);
+        }
 
         if (renderDefaultPage) {
           injectRoute({

@@ -125,6 +125,7 @@ type DocsThemeConfig = {
     light: string;
     dark: string;
   };
+  customCss?: string[];     // CSS files injected into every page, paths relative to project root
   navLinks?: NavItem[];     // header nav links; href accepts "/api" or "api"
   docs?: {
     directory?: string;     // default: "src/content/docs"
@@ -244,9 +245,16 @@ Import from `astro-pigment/components/playground`:
 
 ## CSS Customization
 
-The theme uses CSS variables with fallback defaults. Override them in your own CSS:
+The theme uses CSS variables with fallback defaults. Pass your CSS files via `customCss` and override variables inside:
+
+```js
+docsTheme({
+  customCss: ["./src/styles/custom.css"],
+})
+```
 
 ```css
+/* src/styles/custom.css */
 :root {
   --theme-hue-override: 135;         /* green instead of default cyan (180) */
   --layout-width-override: 1280px;   /* wider layout */

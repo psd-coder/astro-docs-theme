@@ -59,6 +59,8 @@ export type DocsThemeConfig = SiteConfig & {
   search?: boolean;
   /** Inject bundled Martian Grotesk + Mono fonts. Set false to opt out. Default: true. */
   fonts?: boolean;
+  /** CSS files to inject into every page. Paths relative to project root. */
+  customCss?: string[];
   /** Header navigation links. Hrefs may be relative ("api") or absolute ("/api"). */
   navLinks?: NavItem[];
   docs?: {
