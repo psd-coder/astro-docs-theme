@@ -1,2 +1,8 @@
 export { default as LivePreview } from "./LivePreview.astro";
-export { type FileEntry, type LogLevel, fileEntrySchema } from "./types";
+export {
+  type FileEntry,
+  type ImportMap,
+  type LogLevel,
+  fileEntrySchema,
+  importMapSchema,
+} from "./types";

@@ -2,16 +2,17 @@
 import { CodeEditor } from "../CodeEditor";
 import { CollapsiblePane } from "../CollapsiblePane";
 import { LivePreview } from "../LivePreview";
-import type { FileEntry } from "../LivePreview/types";
+import type { FileEntry, ImportMap } from "../LivePreview/types";
 import { ResizablePane, ResizablePanes } from "../ResizablePanes";
 import { Tab, Tabs } from "../Tabs";
 import styles from "./styles.module.css";
 
 type Props = {
   files: FileEntry[];
+  importOverrides?: ImportMap;
 };
 
-const { files } = Astro.props;
+const { files, importOverrides } = Astro.props;
 const firstFile = files[0];
 
 if (!firstFile) throw new Error("No files provided");
@@ -19,6 +20,7 @@ if (!firstFile) throw new Error("No files provided");
 
 <x-code-example class={styles.host}>
   <script type="application/json" data-prop="files" set:html={JSON.stringify(files).replaceAll("</", "<\\/")} is:inline />
+  <script type="application/json" data-prop="importOverrides" set:html={JSON.stringify(importOverrides ?? {})} is:inline />
   <ResizablePanes direction="horizontal" class={styles.panes}>
     <ResizablePane class:list={[styles.pane, styles.codePane]}>
       <Tabs value={firstFile.name} data-ref="x-code-example:tabs" class={styles.fileTabs}>
@@ -51,12 +53,13 @@ if (!firstFile) throw new Error("No files provided");
   import { atom, computed } from "nanostores";
   import * as v from "valibot";
   import { debounce } from "es-toolkit";
-  import { type LogLevel, fileEntrySchema } from "../LivePreview";
+  import { type LogLevel, fileEntrySchema, importMapSchema } from "../LivePreview";
   import styles from "./styles.module.css";
 
   define("x-code-example")
     .withProps(({ number, json }) => ({
       files: json(v.array(fileEntrySchema), []),
+      importOverrides: json(importMapSchema, {}),
       previewDelay: number(500),
     }))
     .withRefs(({ one }) => ({
@@ -133,7 +136,7 @@ if (!firstFile) throw new Error("No files provided");
         ctx.refs.editor.setAttribute("lang", entry.lang);
       });
       ctx.effect($debouncedFiles, (files) => {
-        ctx.refs.preview.value = { files, importOverrides: {} };
+        ctx.refs.preview.value = { files, importOverrides: ctx.props.$importOverrides.get() };
       });
       ctx.effect($logs, (logs) => {
         const scroll = ctx.refs.logsContainer;
