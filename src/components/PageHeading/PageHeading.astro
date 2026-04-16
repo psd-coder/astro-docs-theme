@@ -3,14 +3,21 @@ import Icon from "../Icon/Icon.astro";
 import styles from "./styles.module.css";
 
 type Props = {
+  class?: string;
   title: string;
+  back?: {href: string; label: string};
   href: string;
 };
 
-const { title, href } = Astro.props;
+const { class: className, title, back, href } = Astro.props;
 ---
 
-<div class={styles.headingRow}>
+<div class:list={[styles.headingRow, className]}>
+  {back && (
+    <a class={styles.backLink} href={back.href} aria-label={back.label}>
+      <Icon name="chevron-left" size={28} />
+    </a>
+  )}
   <h1>{title}</h1>
   <a
     href={href}
