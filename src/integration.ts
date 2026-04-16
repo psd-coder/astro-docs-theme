@@ -18,6 +18,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const VIRTUAL_MODULE_ID = "virtual:theme-integration-config";
 const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`;
+const VIRTUAL_EXTRA_ENTRIES_ID = "virtual:theme-extra-entries";
+const RESOLVED_VIRTUAL_EXTRA_ENTRIES_ID = `\0${VIRTUAL_EXTRA_ENTRIES_ID}`;
 
 function validateAuthor(author: DocsThemeConfig["author"]): void {
   if (!author) return;
@@ -78,6 +80,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
   const titleSuffix =
     config.meta?.titleSuffix !== undefined ? config.meta.titleSuffix : siteConfig.project.name;
   const mainPageTitle = config.meta?.mainPageTitle ?? `${siteConfig.project.name} Documentation`;
+  let extraEntriesModuleCode = `export const extraEntries = [];`;
 
   const virtualModuleCode = `
 export const siteConfig = ${JSON.stringify(siteConfig)};
@@ -102,6 +105,15 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
       "astro:config:setup": ({ config: astroConfig, updateConfig, injectRoute, injectScript }) => {
         const site = config.site ?? deriveGitHubPagesSite(config.project.github);
         const base = config.site ? "/" : deriveBase(config.project.github);
+
+        if (config.extraEntries) {
+          const resolved = path.resolve(fileURLToPath(astroConfig.root), config.extraEntries);
+          extraEntriesModuleCode = [
+            `import __entries from ${JSON.stringify(resolved)};`,
+            `const __raw = typeof __entries === "function" ? await __entries() : __entries;`,
+            `export const extraEntries = __raw;`,
+          ].join("\n");
+        }
 
         const integrations: AstroIntegration[] = [];
 
@@ -233,10 +245,12 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
                 name: "docs-theme-virtual-config",
                 resolveId(id: string) {
                   if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID;
+                  if (id === VIRTUAL_EXTRA_ENTRIES_ID) return RESOLVED_VIRTUAL_EXTRA_ENTRIES_ID;
                   return undefined;
                 },
                 load(id: string) {
                   if (id === RESOLVED_VIRTUAL_MODULE_ID) return virtualModuleCode;
+                  if (id === RESOLVED_VIRTUAL_EXTRA_ENTRIES_ID) return extraEntriesModuleCode;
                   return undefined;
                 },
               },

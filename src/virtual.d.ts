@@ -42,3 +42,18 @@ declare module "virtual:theme-integration-config" {
   export const titleSuffix: string | false;
   export const mainPageTitle: string;
 }
+
+declare module "virtual:theme-extra-entries" {
+  type ExtraEntry = {
+    id: string;
+    title: string;
+    description: string;
+    order: number;
+    body?: string;
+    search?: boolean;
+    llms?: boolean;
+    llmsFull?: boolean;
+  };
+
+  export const extraEntries: ExtraEntry[];
+}

@@ -46,6 +46,20 @@ export function stringifyCleanMarkdown(body: string): string {
   return String(stringifier.stringify(tree));
 }
 
+export function markdownLinkItem(title: string, url: string, description: string): string {
+  return `- [${title}](${url}): ${description}`;
+}
+
+export function renderExtraEntryMarkdown(entry: {
+  title: string;
+  description: string;
+  body?: string;
+}): string {
+  const parts = [`# ${entry.title}`, "", entry.description];
+  if (entry.body) parts.push("", stringifyCleanMarkdown(entry.body));
+  return parts.join("\n");
+}
+
 type Section = { title: string; methods: string[] };
 
 export function extractSections(body: string): Section[] {

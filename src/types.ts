@@ -71,6 +71,12 @@ export type DocsThemeConfig = SiteConfig & {
     /** Header navigation links. Hrefs may be relative ("api") or absolute ("/api"). */
     navLinks?: NavItem[];
   };
+  /**
+   * Path to a module (relative to project root) that default-exports
+   * `ExtraEntry[]` or `() => Promise<ExtraEntry[]>`.
+   * Entries are included in search index, llms.txt, and llms-full.txt.
+   */
+  extraEntries?: string;
   meta?: {
     /** HTML lang attribute. Default: "en". */
     lang?: string;
@@ -79,6 +85,23 @@ export type DocsThemeConfig = SiteConfig & {
     /** Full <title> for the root/index page. Default: "{project.name} Documentation". */
     mainPageTitle?: string;
   };
+};
+
+export type ExtraEntry = {
+  /** URL path segment, used as pageId in search. E.g. "examples/counter" */
+  id: string;
+  title: string;
+  description: string;
+  /** Controls position relative to docs in search results and llms output. */
+  order: number;
+  /** Markdown body. Omit for pages with no textual content (e.g. index pages). */
+  body?: string;
+  /** Include in search index. Default: true. */
+  search?: boolean;
+  /** Include in llms.txt. Default: true. */
+  llms?: boolean;
+  /** Include in llms-full.txt. Default: true. */
+  llmsFull?: boolean;
 };
 
 export type FileEntry = {

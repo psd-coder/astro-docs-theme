@@ -9,4 +9,11 @@ export { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
 export const shikiThemes = { light: "catppuccin-latte", dark: "catppuccin-mocha" } as const;
 
 export { fonts } from "./utils/fonts";
-export type { DocsThemeConfig, SiteConfig, NavItem, IconName, FileEntry } from "./types";
+export type {
+  DocsThemeConfig,
+  SiteConfig,
+  NavItem,
+  IconName,
+  FileEntry,
+  ExtraEntry,
+} from "./types";

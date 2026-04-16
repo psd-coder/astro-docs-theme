@@ -92,6 +92,10 @@ docsTheme({
       { href: "/api", label: "API" },
     ],
   },
+
+  // Optional: extra entries for search index + llms.txt from non-collection pages.
+  // Path to a module that default-exports ExtraEntry[] or () => Promise<ExtraEntry[]>.
+  extraEntries: "./src/extra-entries.ts",
 })
 ```
 
@@ -227,17 +231,42 @@ When `docs` is configured in the integration, four endpoints are auto-generated:
 |----------|-------------|
 | `/llms.txt` | Structured index: project name, description, per-doc `##` sections |
 | `/llms-full.txt` | All docs concatenated into a single markdown file |
-| `/[slug].md` | Individual markdown for each doc |
+| `/[slug].md` | Individual markdown for each doc (and extra entries with `body`) |
 | `/sitemap-index.xml` | Standard sitemap via `@astrojs/sitemap` |
 
 Docs are sorted by the `order` field in frontmatter. Frontmatter and import statements are stripped from the output.
+
+When `extraEntries` is configured, those entries are appended after docs in `llms.txt` and `llms-full.txt`. Entries with a `body` field also get individual `/[id].md` routes.
+
+### Extra Entries
+
+Each entry has `id` (URL path segment), `title`, `description`, `order`, and optional `body` (markdown). Pass a static array for simple cases, or a module path for dynamic data:
+
+```ts
+// src/extra-entries.ts
+import type { ExtraEntry } from "astro-pigment";
+import { getCollection } from "astro:content";
+
+export default async function (): Promise<ExtraEntry[]> {
+  const examples = await getCollection("examples");
+  return examples.map((ex) => ({
+    id: `examples/${ex.id}`,
+    title: ex.data.title,
+    description: ex.data.description,
+    order: 101,
+  }));
+}
+```
+
+The module must default-export an `ExtraEntry[]` or a function returning `Promise<ExtraEntry[]>`.
 
 ## Search
 
 Full-text search is enabled by default (`search: true`). When enabled:
 
-- Injects a `/search-index.json` endpoint built from all docs at build time
+- Injects a `/search-index.json` endpoint built from all docs (and `extraEntries`) at build time
 - Renders a search input in the Layout header that queries the index client-side
+- Extra entries with `body` are split into sections like docs; entries without `body` are indexed by title and description
 
 To disable:
 
@@ -302,8 +331,8 @@ const examples = defineCollection({
   }),
 });
 ```
+
 The loader parses `.html` files with `data-type` attributes into `FileEntry` arrays compatible with the `CodeExample` playground component. An element with `id="description"` is extracted as `descriptionHtml` (rich HTML description); if absent, `descriptionHtml` falls back to the plain-text `description`. Requires `linkedom` (bundled with the theme).
-The loader parses `.html` files with `data-type` attributes into `FileEntry` arrays compatible with the `CodeExample` playground component. Requires `linkedom` (bundled with the theme).
 
 ## Exportable Configs
 
