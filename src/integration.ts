@@ -74,6 +74,17 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
   const manifestIconPath = manifestIconSource ? path.resolve(manifestIconSource) : null;
   const hasIcon = faviconPath !== null || manifestIconPath !== null;
 
+  if (hasIcon) {
+    try {
+      createRequire(import.meta.url).resolve("sharp");
+    } catch {
+      throw new Error(
+        `[astro-pigment] The "icon" option requires the "sharp" package. ` +
+          `Install it in your project: npm install sharp (or pnpm add sharp)`,
+      );
+    }
+  }
+
   const huePicker = config.huePicker ?? false;
   const clientRouter = config.clientRouter ?? true;
   const search = config.search ?? true;
@@ -232,24 +243,6 @@ export const mainPageTitle = ${JSON.stringify(mainPageTitle)};
               },
             },
             plugins: [
-              {
-                // Resolve 'sharp' to its absolute path for SSR/prerender so the
-                // emitted chunks use an absolute import that bypasses pnpm isolation.
-                name: "astro-pigment-sharp-resolve",
-                resolveId(
-                  id: string,
-                  _importer: string | undefined,
-                  opts: { ssr?: boolean } | undefined,
-                ) {
-                  if (id === "sharp" && opts?.ssr) {
-                    return {
-                      id: createRequire(import.meta.url).resolve("sharp"),
-                      external: true,
-                    };
-                  }
-                  return undefined;
-                },
-              },
               {
                 name: "docs-theme-virtual-config",
                 resolveId(id: string) {

@@ -122,7 +122,7 @@ type DocsThemeConfig = {
   // Optional
   links?: Array<{ label: string; url: string; icon?: IconName }>;
   site?: string; // default: auto GitHub Pages URL
-  icon?: string; // path to 512x512 PNG or SVG, generates favicons + webmanifest
+  icon?: string; // path to 512x512 PNG or SVG, generates favicons + webmanifest (requires sharp)
   huePicker?: boolean; // show hue slider in header for initial theme setup
   shikiThemes?: {
     // overrides adaptive hue-based theme
@@ -334,6 +334,12 @@ When `docs` is configured, the integration auto-generates:
 - **Sitemap**: via `@astrojs/sitemap`
 
 ## Favicon & Webmanifest
+
+The `icon` option requires the [`sharp`](https://sharp.pixelplumbing.com/) package for raster image generation. Install it in your project:
+
+```bash
+pnpm add sharp
+```
 
 `icon` accepts either a single source path or an object with two sources:
 

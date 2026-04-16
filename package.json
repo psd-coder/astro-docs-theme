@@ -59,7 +59,13 @@
   "peerDependencies": {
     "astro": "^6.0.0",
     "nanostores": "^1.0.0",
-    "nanotags": "^0.14.0"
+    "nanotags": "^0.14.0",
+    "sharp": "^0.34.0"
+  },
+  "peerDependenciesMeta": {
+    "sharp": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.3",
@@ -89,7 +95,6 @@
     "remark-mdx": "^3.1.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "sharp": "^0.34.0",
     "typed-channel": "^0.10.1",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
