@@ -59,6 +59,7 @@ import styles from "./styles.module.css";
   import { isEditableTarget } from "../../utils/dom";
   import { createDebouncedStore } from "../../utils/nanostores";
   import { getHref } from "../../utils/urls";
+  import { QUERY_PARAM } from "./highlight";
   import SearchWorker from "./search-worker.ts?worker&inline";
   import styles from "./styles.module.css";
   import type { ClientMessages, GroupedSearchResult, WorkerMessages } from "./types";
@@ -195,7 +196,8 @@ import styles from "./styles.module.css";
                       const link = ctx.getElement(blockEl, "a");
                       const pageHref = getHref(data.pageId === "index" ? "" : data.pageId);
                       const fragment = blockData.anchor ? `#${blockData.anchor}` : "";
-                      link.href = `${pageHref}${fragment}`;
+                      const hl = query.trim() ? `?${QUERY_PARAM}=${encodeURIComponent(query.trim())}` : "";
+                      link.href = `${pageHref}${hl}${fragment}`;
 
                       const heading = ctx.getElement(blockEl, "[data-heading]");
                       const snippet = ctx.getElement(blockEl, "[data-snippet]");

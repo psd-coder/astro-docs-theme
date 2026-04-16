@@ -37,6 +37,11 @@ a {
   color: var(--color-accent);
 }
 
+::highlight(search-result) {
+  color: var(--color-text-primary);
+  background: oklch(from var(--color-accent) l c h / 25%);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-accent-focus);
   outline-offset: -2px;
