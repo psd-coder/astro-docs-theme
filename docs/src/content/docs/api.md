@@ -292,6 +292,7 @@ const examples = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    descriptionHtml: z.string().default(""),
     files: z.array(z.object({
       name: z.string(),
       type: z.enum(["html", "javascript", "css", "importmap"]),
@@ -301,7 +302,7 @@ const examples = defineCollection({
   }),
 });
 ```
-
+The loader parses `.html` files with `data-type` attributes into `FileEntry` arrays compatible with the `CodeExample` playground component. An element with `id="description"` is extracted as `descriptionHtml` (rich HTML description); if absent, `descriptionHtml` falls back to the plain-text `description`. Requires `linkedom` (bundled with the theme).
 The loader parses `.html` files with `data-type` attributes into `FileEntry` arrays compatible with the `CodeExample` playground component. Requires `linkedom` (bundled with the theme).
 
 ## Exportable Configs

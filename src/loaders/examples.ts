@@ -66,6 +66,9 @@ function parseExampleHtml(raw: string) {
   const description =
     document.querySelector('meta[name="description"]')?.getAttribute("content") ?? "";
 
+  const descriptionEl = document.querySelector("#description");
+  const descriptionHtml = descriptionEl ? dedent(descriptionEl.innerHTML).trim() : null;
+
   const files: FileEntry[] = [];
 
   for (const el of document.querySelectorAll('[data-type], script[type="importmap"]')) {
@@ -82,13 +85,15 @@ function parseExampleHtml(raw: string) {
 
   files.sort((a, b) => TYPE_ORDER[a.type] - TYPE_ORDER[b.type]);
 
-  return { title, description, files };
+  return { title, description, descriptionHtml: descriptionHtml ?? description, files, body: raw };
 }
 
 export const schema = z.object({
   title: z.string(),
   description: z.string(),
+  descriptionHtml: z.string().default(""),
   files: z.array(fileEntrySchema),
+  body: z.string(),
 });
 
 export function loader(contentDir: string): Loader {
