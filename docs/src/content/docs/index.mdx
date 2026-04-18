@@ -4,6 +4,8 @@ description: Astro 6 documentation theme with dark mode, interactive playgrounds
 order: 1
 ---
 
+import { InstallPackage } from "astro-pigment/components";
+
 An [Astro 6](https://astro.build/) documentation theme with dark mode, interactive playgrounds, and SEO endpoints.
 One integration call gives you a complete docs site: layout, navigation, table of contents, code highlighting,
 LLM-friendly endpoints, and a library of interactive components.
@@ -19,25 +21,9 @@ LLM-friendly endpoints, and a library of interactive components.
 
 ## Installation
 
-Add the theme as a GitHub dependency along with its peer dependencies:
+Install the theme along with its peer dependencies:
 
-```json
-// package.json
-{
-  "dependencies": {
-    "astro-pigment": "github:psd-coder/astro-pigment",
-    "astro": "^6.0.0",
-    "nanotags": "^0.14.0",
-    "nanostores": "^1.0.0"
-  }
-}
-```
-
-Then install:
-
-```bash
-pnpm install
-```
+<InstallPackage pkg="astro-pigment astro nanotags nanostores" />
 
 ## Quick Start
 
