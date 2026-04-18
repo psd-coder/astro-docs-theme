@@ -16,24 +16,8 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 
 ## Installation
 
-Add the theme as a GitHub dependency along with its peer dependencies:
-
-```json
-// package.json
-{
-  "dependencies": {
-    "astro-pigment": "github:psd-coder/astro-pigment",
-    "astro": "^6.0.0",
-    "nanotags": "^0.14.0",
-    "nanostores": "^1.0.0"
-  }
-}
-```
-
-Then install:
-
 ```bash
-pnpm install
+pnpm add astro-pigment astro nanotags nanostores
 ```
 
 ## Quick Start
