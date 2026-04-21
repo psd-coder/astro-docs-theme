@@ -145,7 +145,7 @@ type DocsThemeConfig = {
 
 ### What the integration does
 
-- Stores config in a virtual module (`virtual:theme-integration-config`) so components read it automatically
+- Stores config in a virtual module (`virtual:pigment-config`) so components read it automatically
 - Auto-sets `site` and `base` from GitHub config (GitHub Pages URL in CI, `/` in dev)
 - Injects rehype-slug + rehype-autolink-headings
 - Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `theme.shiki` to use fixed themes instead.

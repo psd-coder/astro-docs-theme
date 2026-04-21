@@ -115,7 +115,7 @@ docsTheme({
 
 ### What the integration does
 
-1. Stores config in a **virtual module** (`virtual:theme-integration-config`) so components read it automatically
+1. Stores config in a **virtual module** (`virtual:pigment-config`) so components read it automatically
 2. Auto-sets `site` and `base` from GitHub config (GitHub Pages URL in CI, `/` in dev)
 3. Injects **rehype-slug** + **rehype-autolink-headings**
 4. Injects an **adaptive Shiki theme** that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `theme.shiki` to use fixed themes instead.

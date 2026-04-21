@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import satori from "satori";
 import sharp from "sharp";
-import { meta, publicSiteUrl, theme } from "virtual:theme-integration-config";
+import { meta, publicSiteUrl, theme } from "virtual:pigment-config";
 import type { OgTemplateContext, OgTemplateFn, OgTemplateFont } from "../types";
 import { notFoundResponse } from "./response";
 

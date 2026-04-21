@@ -1,4 +1,4 @@
-declare module "virtual:theme-integration-config" {
+declare module "virtual:pigment-config" {
   type SiteConfig = {
     github: {
       user?: string;
@@ -77,17 +77,17 @@ declare module "virtual:theme-integration-config" {
   };
 }
 
-declare module "virtual:theme-og-template" {
+declare module "virtual:pigment-og-template" {
   type OgTemplateFn = (ctx: unknown) => unknown | Promise<unknown>;
   export const template: OgTemplateFn | null;
 }
 
-declare module "virtual:theme-twitter-template" {
+declare module "virtual:pigment-twitter-template" {
   type OgTemplateFn = (ctx: unknown) => unknown | Promise<unknown>;
   export const template: OgTemplateFn | null;
 }
 
-declare module "virtual:theme-extra-entries" {
+declare module "virtual:pigment-extra-entries" {
   type ExtraEntry = {
     id: string;
     title: string;

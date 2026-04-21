@@ -19,13 +19,13 @@ import { buildConfigModule, virtualReexportDefault } from "./utils/virtualModule
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const VIRTUAL_MODULE_ID = "virtual:theme-integration-config";
+const VIRTUAL_MODULE_ID = "virtual:pigment-config";
 const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`;
-const VIRTUAL_EXTRA_ENTRIES_ID = "virtual:theme-extra-entries";
+const VIRTUAL_EXTRA_ENTRIES_ID = "virtual:pigment-extra-entries";
 const RESOLVED_VIRTUAL_EXTRA_ENTRIES_ID = `\0${VIRTUAL_EXTRA_ENTRIES_ID}`;
-const VIRTUAL_OG_TEMPLATE_ID = "virtual:theme-og-template";
+const VIRTUAL_OG_TEMPLATE_ID = "virtual:pigment-og-template";
 const RESOLVED_VIRTUAL_OG_TEMPLATE_ID = `\0${VIRTUAL_OG_TEMPLATE_ID}`;
-const VIRTUAL_TWITTER_TEMPLATE_ID = "virtual:theme-twitter-template";
+const VIRTUAL_TWITTER_TEMPLATE_ID = "virtual:pigment-twitter-template";
 const RESOLVED_VIRTUAL_TWITTER_TEMPLATE_ID = `\0${VIRTUAL_TWITTER_TEMPLATE_ID}`;
 
 function validateAuthor(author: DocsThemeConfig["author"]): void {
