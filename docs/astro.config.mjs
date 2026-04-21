@@ -17,14 +17,14 @@ export default defineConfig({
       },
       author: { name: "Pavel Grinchenko", url: "https://x.com/psd_coder" },
       credits: [{ name: "Evil Martians", url: "https://evilmartians.com/" }],
-      icon: {
-        favicon: "src/assets/astro-pigment-favicon.svg",
-        manifest: "src/assets/astro-pigment.svg",
-      },
       theme: {
         hue: 274,
       },
       meta: {
+        icon: {
+          favicon: "src/assets/astro-pigment-favicon.svg",
+          manifest: "src/assets/astro-pigment.svg",
+        },
         og: {
           image: {
             logo: "src/assets/astro-pigment-og-logo.png",

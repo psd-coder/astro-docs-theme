@@ -53,14 +53,14 @@ declare module "virtual:theme-integration-config" {
     directory: string;
     navLinks: NavItem[];
   };
-  export const icon: {
-    faviconPath: string | null;
-    manifestIconPath: string | null;
-  };
   export const meta: {
     lang: string;
     titleSuffix: string | false;
     mainPageTitle: string;
+    icon: {
+      faviconPath: string | null;
+      manifestIconPath: string | null;
+    };
     og: {
       image: ResolvedImage;
       fontPaths: {

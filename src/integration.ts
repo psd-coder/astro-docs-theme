@@ -71,12 +71,13 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
   };
   const renderDefaultPage = config.docs?.renderDefaultPage ?? true;
   const navLinks = config.docs?.navLinks ?? [];
-  const shikiConfig = config.shikiThemes
-    ? { themes: config.shikiThemes }
+  const shikiConfig = config.theme?.shiki
+    ? { themes: config.theme.shiki }
     : { theme: adaptiveCodeTheme };
 
-  const faviconSource = typeof config.icon === "string" ? config.icon : config.icon?.favicon;
-  const manifestIconSource = typeof config.icon === "string" ? config.icon : config.icon?.manifest;
+  const iconConfig = config.meta?.icon;
+  const faviconSource = typeof iconConfig === "string" ? iconConfig : iconConfig?.favicon;
+  const manifestIconSource = typeof iconConfig === "string" ? iconConfig : iconConfig?.manifest;
   const faviconPath = faviconSource ? path.resolve(faviconSource) : null;
   const manifestIconPath = manifestIconSource ? path.resolve(manifestIconSource) : null;
   const hasIcon = faviconPath !== null || manifestIconPath !== null;
@@ -86,7 +87,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
       createRequire(import.meta.url).resolve("sharp");
     } catch {
       throw new Error(
-        `[astro-pigment] The "icon" option requires the "sharp" package. ` +
+        `[astro-pigment] The "meta.icon" option requires the "sharp" package. ` +
           `Install it in your project: npm install sharp (or pnpm add sharp)`,
       );
     }
@@ -122,9 +123,9 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
         const base = config.site ? "/" : deriveBase(config.project.github);
         const astroRoot = fileURLToPath(astroConfig.root);
 
-        const extraEntriesModuleCode = config.extraEntries
+        const extraEntriesModuleCode = config.docs?.extraEntries
           ? virtualReexportDefault({
-              filePath: path.resolve(astroRoot, config.extraEntries),
+              filePath: path.resolve(astroRoot, config.docs.extraEntries),
               exportName: "extraEntries",
               resolveCallable: true,
             })
@@ -197,11 +198,11 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
           search,
           theme: { hue: themeHue },
           docs: { ...docsConfig, navLinks },
-          icon: { faviconPath, manifestIconPath },
           meta: {
             lang,
             titleSuffix,
             mainPageTitle,
+            icon: { faviconPath, manifestIconPath },
             og: {
               image: { ...ogImage, alt: ogImageAlt, url: ogImageUrl },
               fontPaths: ogFontPaths,
@@ -256,7 +257,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
           });
         }
 
-        for (const cssPath of config.customCss ?? []) {
+        for (const cssPath of config.theme?.customCss ?? []) {
           const resolved = path.resolve(astroRoot, cssPath);
           injectScript("page-ssr", `import ${JSON.stringify(resolved)};`);
         }
@@ -310,7 +311,7 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
           site: astroConfig.site ?? site,
           base: astroConfig.base !== "/" ? astroConfig.base : base,
           integrations,
-          ...(config.fonts !== false && { fonts: fonts() }),
+          ...(config.theme?.fonts !== false && { fonts: fonts() }),
           markdown: {
             shikiConfig,
             rehypePlugins: [

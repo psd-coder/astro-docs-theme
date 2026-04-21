@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { icon } from "virtual:theme-integration-config";
+import { meta } from "virtual:theme-integration-config";
 import { pngIconResponse } from "../utils/icon";
 
-export const GET: APIRoute = () => pngIconResponse(icon.manifestIconPath, 512);
+export const GET: APIRoute = () => pngIconResponse(meta.icon.manifestIconPath, 512);

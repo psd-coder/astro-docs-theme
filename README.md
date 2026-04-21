@@ -12,7 +12,7 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 - **Social cards**: auto-generated `/og.png` and Twitter card meta tags, with a built-in template, static PNG, or custom satori template (dedicated `meta.og.image.logo` recommended for best results)
 - **Auto-generated favicons**: provide one or two source icons, get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
 - **robots.txt + sitemap**: served out of the box, sitemap URL resolved from site+base
-- **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
+- **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `theme.fonts: false`)
 - **Accessible**: roving focus, ARIA attributes, keyboard navigation throughout
 - **Zero build step**: Astro resolves `.astro`/`.ts` source directly from the package
 
@@ -42,7 +42,7 @@ export default defineConfig({
         github: { user: "your-name", repository: "your-repo" },
       },
       author: { name: "Your Name", url: "https://x.com/your_handle" },
-      icon: "src/assets/icon.svg",
+      meta: { icon: "src/assets/icon.svg" },
       docs: {
         navLinks: [
           { href: "/", label: "Overview" },
@@ -107,25 +107,27 @@ type DocsThemeConfig = {
   author?: { name: string; url: string; icon?: string };
   credits?: Array<{ name: string; url: string }>;
   site?: string; // default: auto GitHub Pages URL
-  icon?: string | { favicon: string; manifest: string }; // favicons + webmanifest (requires sharp)
   logo?: string; // path to SVG rendered as header logo
   huePicker?: boolean; // show hue slider in header for initial theme setup
   clientRouter?: boolean; // Astro View Transitions, default true
   search?: boolean; // full-text search, default true
-  fonts?: boolean; // bundled Martian fonts, default true
-  customCss?: string[]; // CSS files injected into every page
-  shikiThemes?: { light: string; dark: string }; // overrides adaptive theme
-  theme?: { hue?: number }; // base hue 0-360, default 180
+  theme?: {
+    hue?: number; // base hue 0-360, default 180
+    shiki?: { light: string; dark: string }; // overrides adaptive theme
+    fonts?: boolean; // bundled Martian fonts, default true
+    customCss?: string[]; // CSS files injected into every page
+  };
   docs?: {
     directory?: string; // default: "src/content/docs"
     renderDefaultPage?: boolean; // default: true
     navLinks?: Array<{ href: string; label: string }>;
+    extraEntries?: string; // path to module exporting ExtraEntry[] or () => Promise<ExtraEntry[]>
   };
-  extraEntries?: string; // path to module exporting ExtraEntry[] or () => Promise<ExtraEntry[]>
   meta?: {
     lang?: string; // <html lang>, default "en"
     titleSuffix?: string | false; // " | {suffix}" on sub-pages, default project.name
     mainPageTitle?: string; // <title> for "/", default "{project.name} documentation"
+    icon?: string | { favicon: string; manifest: string }; // favicons + webmanifest (requires sharp)
     og?: {
       // image modes: string path | true (built-in template) | { template: "./file.ts" }
       image?: string | true | { template: string };
@@ -146,9 +148,9 @@ type DocsThemeConfig = {
 - Stores config in a virtual module (`virtual:theme-integration-config`) so components read it automatically
 - Auto-sets `site` and `base` from GitHub config (GitHub Pages URL in CI, `/` in dev)
 - Injects rehype-slug + rehype-autolink-headings
-- Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
+- Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `theme.shiki` to use fixed themes instead.
 - Injects PostCSS preset-env (nesting, custom-media, media-query-ranges)
-- When `icon` is configured: generates favicons (svg, ico, 96x96 png), apple-touch-icon, webmanifest + manifest icons
+- When `meta.icon` is configured: generates favicons (svg, ico, 96x96 png), apple-touch-icon, webmanifest + manifest icons
 - Injects sitemap, `/robots.txt`, `/llms.txt`, `/llms-full.txt`, `/[slug].md` routes
 - Serves `/og.png` (built-in satori template by default) and emits full OG + Twitter card meta tags; `summary_large_image` card when an image resolves
 - Injects `/[...slug]` page rendering docs from the content collection (opt out with `docs.renderDefaultPage: false`)
@@ -265,11 +267,11 @@ Import from `astro-pigment/components/playground`:
 
 ## CSS Customization
 
-The theme uses CSS variables with fallback defaults. Pass your CSS files via `customCss` and override variables inside:
+The theme uses CSS variables with fallback defaults. Pass your CSS files via `theme.customCss` and override variables inside:
 
 ```js
 docsTheme({
-  customCss: ["./src/styles/custom.css"],
+  theme: { customCss: ["./src/styles/custom.css"] },
 });
 ```
 
@@ -299,7 +301,7 @@ Typography: `--text-xxs` (0.625rem) through `--text-2xl` (2rem). Spacing base: `
 
 ## Fonts
 
-The integration auto-injects bundled Martian Grotesk (variable weight) and Martian Mono (400) as local fonts, setting `--font-sans` and `--font-mono` CSS variables. Pass `fonts: false` to opt out and set those variables to your own fonts.
+The integration auto-injects bundled Martian Grotesk (variable weight) and Martian Mono (400) as local fonts, setting `--font-sans` and `--font-mono` CSS variables. Pass `theme.fonts: false` to opt out and set those variables to your own fonts.
 
 ## Stores
 
@@ -342,22 +344,24 @@ When `docs` is configured, the integration auto-generates:
 
 ## Favicon & Webmanifest
 
-The `icon` option requires the [`sharp`](https://sharp.pixelplumbing.com/) package for raster image generation. Install it in your project:
+The `meta.icon` option requires the [`sharp`](https://sharp.pixelplumbing.com/) package for raster image generation. Install it in your project:
 
 ```bash
 pnpm add sharp
 ```
 
-`icon` accepts either a single source path or an object with two sources:
+`meta.icon` accepts either a single source path or an object with two sources:
 
 ```js
 // single source (same icon for all sizes)
-icon: "src/assets/icon.svg",
+meta: { icon: "src/assets/icon.svg" }
 
 // two sources — simplified design for tiny favicons, detailed for manifest
-icon: {
-  favicon: "src/assets/favicon.svg",      // used for /favicon.svg and /favicon.ico (16-32px)
-  manifest: "src/assets/icon-detailed.svg", // used for 96px and up
+meta: {
+  icon: {
+    favicon: "src/assets/favicon.svg",        // used for /favicon.svg and /favicon.ico (16-32px)
+    manifest: "src/assets/icon-detailed.svg", // used for 96px and up
+  },
 }
 ```
 
@@ -373,7 +377,7 @@ Generated routes:
 - `/web-app-manifest-512x512.png` — from `manifest` source
 - `/site.webmanifest`
 
-Layout renders the corresponding `<link>` tags only when `icon` is set.
+Layout renders the corresponding `<link>` tags only when `meta.icon` is set.
 
 ## Examples Loader
 
