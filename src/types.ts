@@ -44,6 +44,36 @@ export type SiteConfig = {
   }>;
 };
 
+export type OgImageSource =
+  | string
+  | true
+  | {
+      logo?: string | false;
+      template?: string;
+      title?: string;
+      description?: string;
+    };
+
+export type OgTemplateFont = {
+  name: string;
+  data: ArrayBuffer;
+  weight?: number;
+  style?: "normal" | "italic";
+};
+
+export type OgTemplateContext = {
+  projectName: string;
+  description: string;
+  siteUrl: string;
+  pathname: string;
+  /** Data URI + natural dimensions of the OG logo (from `meta.og.logo` or top-level `logo`). */
+  logo?: { src: string; width: number; height: number };
+  hue: number;
+  fonts: OgTemplateFont[];
+};
+
+export type OgTemplateFn = (ctx: OgTemplateContext) => unknown | Promise<unknown>;
+
 export type DocsThemeConfig = SiteConfig & {
   site?: string;
   /**
@@ -69,6 +99,11 @@ export type DocsThemeConfig = SiteConfig & {
   fonts?: boolean;
   /** CSS files to inject into every page. Paths relative to project root. */
   customCss?: string[];
+  /** Theme customization. Consumed by CSS variables and OG image generator. */
+  theme?: {
+    /** Base hue (0-360). Default: 180. */
+    hue?: number;
+  };
   docs?: {
     /** Default: "src/content/docs". */
     directory?: string;
@@ -90,6 +125,23 @@ export type DocsThemeConfig = SiteConfig & {
     titleSuffix?: string | false;
     /** Full <title> for the root/index page. Default: "{project.name} Documentation". */
     mainPageTitle?: string;
+    /**
+     * Open Graph image. Defaults to `true` (built-in template) when unset.
+     * - string: path to a PNG file relative to project root (served as-is).
+     * - true: built-in template, uses top-level `logo` if set.
+     * - object: override template / logo / title / description. Omit `template` for built-in.
+     */
+    og?: {
+      image?: OgImageSource;
+      imageAlt?: string;
+    };
+    /** Twitter card metadata. Image defaults to og.image. */
+    twitter?: {
+      site?: string;
+      creator?: string;
+      image?: OgImageSource;
+      imageAlt?: string;
+    };
   };
 };
 

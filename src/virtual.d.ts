@@ -26,21 +26,65 @@ declare module "virtual:theme-integration-config" {
     label: string;
   };
 
+  type ResolvedImage =
+    | { mode: "none"; alt: string; url: null }
+    | { mode: "file"; filePath: string; alt: string; url: string }
+    | {
+        mode: "auto" | "template";
+        templatePath: string | null;
+        logoPath: string | null;
+        title: string;
+        description: string;
+        alt: string;
+        url: string;
+      };
+
   export const siteConfig: SiteConfig;
   export const githubUrl: string;
-  export const docsConfig: {
-    directory: string;
-  };
-  export const faviconPath: string | null;
-  export const manifestIconPath: string | null;
+  export const publicSiteUrl: string;
+  export const logo: string | null;
   export const huePicker: boolean;
   export const clientRouter: boolean;
   export const search: boolean;
-  export const navLinks: NavItem[];
-  export const logo: string | null;
-  export const lang: string;
-  export const titleSuffix: string | false;
-  export const mainPageTitle: string;
+  export const theme: {
+    hue: number;
+  };
+  export const docs: {
+    directory: string;
+    navLinks: NavItem[];
+  };
+  export const icon: {
+    faviconPath: string | null;
+    manifestIconPath: string | null;
+  };
+  export const meta: {
+    lang: string;
+    titleSuffix: string | false;
+    mainPageTitle: string;
+    og: {
+      image: ResolvedImage;
+      fontPaths: {
+        sansRegular: string;
+        sansBold: string;
+        mono: string;
+      };
+    };
+    twitter: {
+      image: ResolvedImage;
+      site: string | null;
+      creator: string | null;
+    };
+  };
+}
+
+declare module "virtual:theme-og-template" {
+  type OgTemplateFn = (ctx: unknown) => unknown | Promise<unknown>;
+  export const template: OgTemplateFn | null;
+}
+
+declare module "virtual:theme-twitter-template" {
+  type OgTemplateFn = (ctx: unknown) => unknown | Promise<unknown>;
+  export const template: OgTemplateFn | null;
 }
 
 declare module "virtual:theme-extra-entries" {

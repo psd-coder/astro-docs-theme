@@ -6,10 +6,12 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 
 - **Single integration**: rehype plugins, PostCSS, Shiki themes, sitemap, and SEO routes configured automatically
 - **Dark mode**: three-state toggle (auto/light/dark) with View Transitions, no FOUC
-- **CSS variable theming**: override `--theme-hue-override` or `--layout-width-override` in plain CSS, no config options needed
+- **Theming**: set `theme.hue` in config; all colors derive via OKLch
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
-- **Auto-generated favicons**: provide one or two source icons (simplified favicon + detailed manifest), get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
+- **Social cards**: auto-generated `/og.png` and Twitter card meta tags, with a built-in template, static PNG, or custom satori template (dedicated `meta.og.image.logo` recommended for best results)
+- **Auto-generated favicons**: provide one or two source icons, get favicon.ico, SVG, PNG, apple-touch-icon, and webmanifest
+- **robots.txt + sitemap**: served out of the box, sitemap URL resolved from site+base
 - **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
 - **Accessible**: roving focus, ARIA attributes, keyboard navigation throughout
 - **Zero build step**: Astro resolves `.astro`/`.ts` source directly from the package
@@ -41,10 +43,12 @@ export default defineConfig({
       },
       author: { name: "Your Name", url: "https://x.com/your_handle" },
       icon: "src/assets/icon.svg",
-      navLinks: [
-        { href: "/", label: "Overview" },
-        { href: "/api", label: "API" },
-      ],
+      docs: {
+        navLinks: [
+          { href: "/", label: "Overview" },
+          { href: "/api", label: "API" },
+        ],
+      },
     }),
   ],
 });
@@ -72,55 +76,67 @@ docsTheme({
 });
 ```
 
-Drag the slider, pick a hue you like, then hardcode it in CSS and remove `huePicker`:
+Drag the slider, pick a hue you like, then set it in config and remove `huePicker`:
 
-```css
-:root {
-  --theme-hue-override: 135; /* the value you picked */
-}
+```js
+docsTheme({
+  // ...your config
+  theme: { hue: 135 },
+});
 ```
 
-All UI and code syntax highlighting colors derive from this hue via OKLch.
+`theme.hue` drives both the site CSS variables and the auto-generated OG image. All UI and code syntax highlighting colors derive from this hue via OKLch.
 
 ## Integration Config
 
 ```ts
 type DocsThemeConfig = {
   // Required
-  github: {
-    user?: string; // one of user/organization required
-    organization?: string;
-    repository: string;
-  };
   project: {
     name: string;
     description: string;
     license: { name: string; url: string };
-  };
-  author: {
-    name: string;
-    url: string;
-    icon?: IconName; // auto-detected: "x" for x.com URLs
+    github: {
+      user?: string; // one of user/organization required
+      organization?: string;
+      repository: string;
+    };
   };
 
   // Optional
-  links?: Array<{ label: string; url: string; icon?: IconName }>;
+  author?: { name: string; url: string; icon?: string };
+  credits?: Array<{ name: string; url: string }>;
   site?: string; // default: auto GitHub Pages URL
-  icon?: string; // path to 512x512 PNG or SVG, generates favicons + webmanifest (requires sharp)
+  icon?: string | { favicon: string; manifest: string }; // favicons + webmanifest (requires sharp)
+  logo?: string; // path to SVG rendered as header logo
   huePicker?: boolean; // show hue slider in header for initial theme setup
-  shikiThemes?: {
-    // overrides adaptive hue-based theme
-    light: string;
-    dark: string;
-  };
-  customCss?: string[]; // CSS files injected into every page, paths relative to project root
-  navLinks?: NavItem[]; // header nav links; href accepts "/api" or "api"
+  clientRouter?: boolean; // Astro View Transitions, default true
+  search?: boolean; // full-text search, default true
+  fonts?: boolean; // bundled Martian fonts, default true
+  customCss?: string[]; // CSS files injected into every page
+  shikiThemes?: { light: string; dark: string }; // overrides adaptive theme
+  theme?: { hue?: number }; // base hue 0-360, default 180
   docs?: {
     directory?: string; // default: "src/content/docs"
-    pattern?: string; // default: "**/*.{md,mdx}"
-    deepSections?: string[]; // slugs where llms.txt shows ### headings
-    renderDefaultPage?: boolean; // default: true. set false to ship your own [...slug].astro
-    tocItemsSelector?: string; // default: ".prose :is(h2, h3)[id]"
+    renderDefaultPage?: boolean; // default: true
+    navLinks?: Array<{ href: string; label: string }>;
+  };
+  extraEntries?: string; // path to module exporting ExtraEntry[] or () => Promise<ExtraEntry[]>
+  meta?: {
+    lang?: string; // <html lang>, default "en"
+    titleSuffix?: string | false; // " | {suffix}" on sub-pages, default project.name
+    mainPageTitle?: string; // <title> for "/", default "{project.name} documentation"
+    og?: {
+      // image modes: string path | true (built-in template) | { template: "./file.ts" }
+      image?: string | true | { template: string };
+      imageAlt?: string;
+    };
+    twitter?: {
+      site?: string;
+      creator?: string; // auto-derived from author.url if x.com
+      image?: string | true | { template: string }; // defaults to og.image
+      imageAlt?: string;
+    };
   };
 };
 ```
@@ -133,7 +149,8 @@ type DocsThemeConfig = {
 - Injects an adaptive Shiki theme that derives syntax colors from `--theme-hue` (based on Catppuccin, hue-rotated via OKLch). Override with `shikiThemes` to use fixed themes instead.
 - Injects PostCSS preset-env (nesting, custom-media, media-query-ranges)
 - When `icon` is configured: generates favicons (svg, ico, 96x96 png), apple-touch-icon, webmanifest + manifest icons
-- Injects sitemap + llms.txt, llms-full.txt, [slug].md routes
+- Injects sitemap, `/robots.txt`, `/llms.txt`, `/llms-full.txt`, `/[slug].md` routes
+- Serves `/og.png` (built-in satori template by default) and emits full OG + Twitter card meta tags; `summary_large_image` card when an image resolves
 - Injects `/[...slug]` page rendering docs from the content collection (opt out with `docs.renderDefaultPage: false`)
 
 ## Components
@@ -259,13 +276,12 @@ docsTheme({
 ```css
 /* src/styles/custom.css */
 :root {
-  --theme-hue-override: 135; /* green instead of default cyan (180) */
   --layout-width-override: 1280px; /* wider layout */
   --layout-sidebar-width-override: 280px;
 }
 ```
 
-All color tokens are derived from `--theme-hue` using OKLch, so changing the hue recolors the entire site.
+For hue, use `theme.hue` in the integration config (see above). All color tokens are derived from `--theme-hue` using OKLch, so changing the hue recolors the entire site.
 
 ### Available tokens
 

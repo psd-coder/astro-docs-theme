@@ -63,10 +63,25 @@ docsTheme({
     // Full <title> for the root/index page, bypassing the normal "{page} | {suffix}" pattern.
     // Default: "{project.name} Documentation".
     // mainPageTitle: "My Project — Fast & Simple",
+    // Open Graph image. Defaults to true when unset. Three forms:
+    //   string   -> path to PNG, served at /og.png
+    //   true     -> built-in template, uses top-level `logo` if set
+    //   object   -> override any of: template, logo, title, description
+    // Object fields (all optional):
+    //   logo:        string path / false (opt out) / absent (uses top-level `logo`)
+    //   template:    path to .ts default-exporting OgTemplateFn
+    //   title:       replace project.name shown on the card
+    //   description: replace project.description shown on the card
+    // og: { image: { logo: "src/assets/og-logo.svg", title: "My App" }, imageAlt: "Alt" },
+    // Twitter card. Image defaults to og.image.
+    // twitter: { site: "@my_org", creator: "@me" },
   },
 
+  // Optional: theme tokens. Hue feeds CSS variables and the auto OG template.
+  // theme: { hue: 220 },
+
   // Optional: show hue slider in header to pick a theme hue.
-  // Use it to find the right value, then set --theme-hue-override and remove this.
+  // Use it to find the right value, then set theme.hue in config and remove this.
   huePicker: true,
 
   // Optional: syntax highlighting themes (overrides adaptive hue-based theme)
@@ -107,6 +122,9 @@ docsTheme({
 8. When `search: true` (default): injects `/search-index.json` and renders a search input in the Layout header
 9. When `clientRouter: true` (default): enables Astro View Transitions via `<ClientRouter />`
 10. When `icon` is configured: generates **favicons** (svg, ico, 96x96 png), **apple-touch-icon**, **webmanifest** + manifest icons (192x192, 512x512)
+11. Always serves `/robots.txt` (permissive, with `Sitemap:` pointing at `/sitemap-index.xml`)
+12. Always serves `/og.png` (built-in template by default, or whatever `meta.og.image` specifies) and emits `<meta property="og:image">` at 1200x630
+13. Twitter falls back to the OG image; emits `summary_large_image` Twitter card tags. Override with `meta.twitter.image` to use a different mode/path
 
 ## CSS Customization
 
@@ -114,22 +132,22 @@ The theme uses CSS variables with fallback defaults. Override them in your own C
 
 ```css
 :root {
-  --theme-hue-override: 135; /* green instead of default cyan (180) */
   --layout-width-override: 1280px; /* wider layout */
   --layout-sidebar-width-override: 280px;
 }
 ```
 
-All color tokens derive from `--theme-hue` using OKLch, so changing the hue recolors the entire site, including syntax highlighting in code blocks.
+For hue, use `theme.hue` in the integration config — it's the single source of truth for both the site CSS and the auto-generated OG image. All color tokens derive from `--theme-hue` using OKLch, so changing the hue recolors the entire site, including syntax highlighting in code blocks.
 
 ### Picking a hue
 
-Enable `huePicker: true` in the integration config to show a hue slider in the header. Drag it to find the right value, then hardcode it with `--theme-hue-override` and remove `huePicker`:
+Enable `huePicker: true` in the integration config to show a hue slider in the header. Drag it to find the right value, then set `theme.hue` in config and remove `huePicker`:
 
-```css
-:root {
-  --theme-hue-override: 135;
-}
+```js
+docsTheme({
+  // ...
+  theme: { hue: 135 },
+});
 ```
 
 The slider persists its value to `localStorage`, so you can test across page loads. Once you've settled on a hue, turn it off: the slider is a setup tool, not a production feature.
@@ -299,6 +317,74 @@ Use the object form when a detailed 512x512 design becomes illegible at 16-32px.
 | `/site.webmanifest`             | —          | JSON manifest with project name and icon refs |
 
 The Layout `<head>` renders the corresponding `<link>` tags only when `icon` is set. Uses `sharp` for image resizing (bundled with the theme).
+
+## Open Graph and Twitter Cards
+
+`/og.png` is always served. By default it uses a built-in satori template; override via `meta.og.image`:
+
+> **Tip:** in most cases, provide a dedicated `image.logo`. Your site logo is tuned for the site's own surface colors (light/dark neutrals), but the OG card uses a theme-hue-tinted background — a logo that reads cleanly on the site can lose contrast or clash on the card. An OG-specific variant with a palette tuned for that background keeps the mark legible across any `theme.hue`.
+
+```ts
+// Default: built-in template with fallback logo. No config needed.
+// meta: { og: { image: true } }
+
+// Static PNG (served as-is)
+meta: { og: { image: "src/assets/og.png" } };
+
+// Built-in template with overrides (all fields optional)
+meta: {
+  og: {
+    image: {
+      logo: "src/assets/og-logo.png", // string path | false (skip) | absent (fallback)
+      title: "My App",                // override project.name on the card
+      description: "Short pitch",     // override project.description on the card
+    },
+  },
+};
+
+// Custom satori template (same override fields apply)
+meta: {
+  og: {
+    image: {
+      template: "./src/og-template.ts",
+      title: "My App",
+    },
+  },
+};
+```
+
+Built-in and template modes require `sharp` (same peer dep as `icon`). The built-in template uses `theme.hue` for color, bundled Martian Grotesk + Mono, and `project.{name,description}`. Logo resolution: explicit `image.logo` (string) → top-level `logo` → nothing. The resolved logo is rendered in its original colors (no processing) and replaces the project name; pass `image: { logo: false }` to render only the project name even when a top-level `logo` is set.
+
+The built-in OG template always uses the bundled Martian fonts — it does **not** pick up whatever you've configured in Astro's top-level `fonts` option. Astro's font pipeline emits woff2 only, but satori requires TTF/OTF, so server-side image generation is decoupled from browser-served fonts. To use different typography in your OG card, switch to a custom template (mode 2 above) and load your own TTF/OTF buffers inside it — `ctx.fonts` is provided as a convenience but isn't required.
+
+Custom templates default-export an `OgTemplateFn`:
+
+```ts
+// src/og-template.ts
+import type { OgTemplateFn } from "astro-pigment";
+
+const template: OgTemplateFn = (ctx) => ({
+  type: "div",
+  props: {
+    style: {
+      display: "flex",
+      width: "1200px",
+      height: "630px",
+      color: "white",
+      background: `hsl(${ctx.hue} 30% 12%)`,
+    },
+    children: ctx.projectName,
+  },
+});
+
+export default template;
+```
+
+Satori's color parser doesn't handle `oklch()` — stick to hex, `rgb()`, or `hsl()` inside templates.
+
+`ctx` exposes `projectName`, `description`, `siteUrl`, `pathname`, `logo` (`{ src: dataUri, width, height }` if `meta.og.logo` resolves, else undefined), `hue`, and `fonts` (Martian Grotesk Std Regular/Bold, Martian Mono Regular) for satori.
+
+Twitter falls back to the OG image when `meta.twitter.image` is unset; set it independently to use a different mode/path. Twitter card is always `summary_large_image` when an image is present.
 
 ## Examples Loader
 
