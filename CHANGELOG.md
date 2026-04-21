@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.0
+
+### Breaking
+
+- Config regrouped: `icon` → `meta.icon`, `fonts` → `theme.fonts`, `shikiThemes` → `theme.shiki`, `extraEntries` → `docs.extraEntries`.
+- Virtual module IDs renamed: `virtual:theme-integration-config` → `virtual:pigment-config`, `virtual:theme-extra-entries` → `virtual:pigment-extra-entries`.
+
+### Added
+
+- OG image endpoint `/og.png` and Twitter image `/twitter-image.png` via Satori-based renderer.
+- `/robots.txt` injected route.
+- `theme.hue` config option.
+- Bundled Martian Grotesk and Martian Mono fonts.
+
 ## 0.12.0
 
 ### Added
@@ -41,11 +55,11 @@
 
 ## 0.10.0
 
-### Added
-
-- `customCss` config option — pass an array of CSS file paths (relative to project root) to inject them into every page.
-
-### Changed
+### Breaking
 
 - `hueSlider` config option renamed to `huePicker`. Update your `astro.config.mjs` accordingly.
 - `HueSlider` component renamed to `HuePicker`. Update any direct imports from `astro-pigment/components`.
+
+### Added
+
+- `customCss` config option — pass an array of CSS file paths (relative to project root) to inject them into every page.
