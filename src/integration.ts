@@ -9,10 +9,13 @@ import postcssPresetEnv from "postcss-preset-env";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
-import type { DocsThemeConfig, OgImageSource, SiteConfig } from "./types";
+import type { DocsThemeConfig, SiteConfig } from "./types";
 import { generateScopedName, transitiveCssPlugin } from "./utils/cssModules";
 import { fonts } from "./utils/fonts";
 import { deriveBase, deriveGitHubPagesSite, getGithubUrl } from "./utils/github";
+import { isGenerated, resolveImageSource } from "./utils/ogResolve";
+import { deriveTwitterCreator } from "./utils/twitter";
+import { buildConfigModule, virtualReexportDefault } from "./utils/virtualModules";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,17 +27,6 @@ const VIRTUAL_OG_TEMPLATE_ID = "virtual:theme-og-template";
 const RESOLVED_VIRTUAL_OG_TEMPLATE_ID = `\0${VIRTUAL_OG_TEMPLATE_ID}`;
 const VIRTUAL_TWITTER_TEMPLATE_ID = "virtual:theme-twitter-template";
 const RESOLVED_VIRTUAL_TWITTER_TEMPLATE_ID = `\0${VIRTUAL_TWITTER_TEMPLATE_ID}`;
-
-type ImageConfig =
-  | { mode: "none" }
-  | { mode: "file"; filePath: string }
-  | {
-      mode: "auto" | "template";
-      templatePath: string | null;
-      logoPath: string | null;
-      title: string;
-      description: string;
-    };
 
 function validateAuthor(author: DocsThemeConfig["author"]): void {
   if (!author) return;
@@ -57,75 +49,6 @@ function extractSiteConfig(config: DocsThemeConfig): SiteConfig {
 
 function readSvg(filePath: string): string {
   return readFileSync(path.resolve(filePath), "utf-8");
-}
-
-function resolveImageSource(
-  source: OgImageSource | undefined,
-  astroRoot: string,
-  logoFallback: string | null,
-  defaultTitle: string,
-  defaultDescription: string,
-): ImageConfig {
-  if (source === undefined || source === true) {
-    return {
-      mode: "auto",
-      templatePath: null,
-      logoPath: logoFallback,
-      title: defaultTitle,
-      description: defaultDescription,
-    };
-  }
-  if (typeof source === "string") {
-    return { mode: "file", filePath: path.resolve(astroRoot, source) };
-  }
-  const logoPath =
-    source.logo === false
-      ? null
-      : typeof source.logo === "string"
-        ? path.resolve(astroRoot, source.logo)
-        : logoFallback;
-  const title = source.title ?? defaultTitle;
-  const description = source.description ?? defaultDescription;
-  return {
-    mode: source.template ? "template" : "auto",
-    templatePath: source.template ? path.resolve(astroRoot, source.template) : null,
-    logoPath,
-    title,
-    description,
-  };
-}
-
-function isGenerated(image: ImageConfig): boolean {
-  return image.mode === "auto" || image.mode === "template";
-}
-
-function virtualReexportDefault(opts: {
-  filePath: string;
-  exportName: string;
-  resolveCallable?: boolean;
-}): string {
-  const lines = [`import __m from ${JSON.stringify(opts.filePath)};`];
-  if (opts.resolveCallable) {
-    lines.push(
-      `const __raw = typeof __m === "function" ? await __m() : __m;`,
-      `export const ${opts.exportName} = __raw;`,
-    );
-  } else {
-    lines.push(`export const ${opts.exportName} = __m;`);
-  }
-  return lines.join("\n");
-}
-
-function deriveTwitterCreator(
-  explicit: string | undefined,
-  author: DocsThemeConfig["author"],
-): string | null {
-  if (explicit) return explicit;
-  if (!author) return null;
-  const match = author.url.match(/x\.com\/(@?[\w-]+)/);
-  const raw = match?.[1];
-  if (!raw) return null;
-  return raw.startsWith("@") ? raw : `@${raw}`;
 }
 
 export function createIntegration(config: DocsThemeConfig): AstroIntegration {
@@ -264,32 +187,32 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
             ? "/twitter-image.png"
             : null;
 
-        const virtualModuleCode = `
-export const siteConfig = ${JSON.stringify(siteConfig)};
-export const githubUrl = ${JSON.stringify(githubUrl)};
-export const publicSiteUrl = ${JSON.stringify(publicSiteUrl)};
-export const logo = ${JSON.stringify(logo)};
-export const huePicker = ${JSON.stringify(huePicker)};
-export const clientRouter = ${JSON.stringify(clientRouter)};
-export const search = ${JSON.stringify(search)};
-export const theme = ${JSON.stringify({ hue: themeHue })};
-export const docs = ${JSON.stringify({ ...docsConfig, navLinks })};
-export const icon = ${JSON.stringify({ faviconPath, manifestIconPath })};
-export const meta = ${JSON.stringify({
-          lang,
-          titleSuffix,
-          mainPageTitle,
-          og: {
-            image: { ...ogImage, alt: ogImageAlt, url: ogImageUrl },
-            fontPaths: ogFontPaths,
+        const virtualModuleCode = buildConfigModule({
+          siteConfig,
+          githubUrl,
+          publicSiteUrl,
+          logo,
+          huePicker,
+          clientRouter,
+          search,
+          theme: { hue: themeHue },
+          docs: { ...docsConfig, navLinks },
+          icon: { faviconPath, manifestIconPath },
+          meta: {
+            lang,
+            titleSuffix,
+            mainPageTitle,
+            og: {
+              image: { ...ogImage, alt: ogImageAlt, url: ogImageUrl },
+              fontPaths: ogFontPaths,
+            },
+            twitter: {
+              image: { ...twitterImage, alt: twitterImageAlt, url: twitterImageUrl },
+              site: twitterSite,
+              creator: twitterCreator,
+            },
           },
-          twitter: {
-            image: { ...twitterImage, alt: twitterImageAlt, url: twitterImageUrl },
-            site: twitterSite,
-            creator: twitterCreator,
-          },
-        })};
-`;
+        });
 
         const integrations: AstroIntegration[] = [];
 
