@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0
+
+### Breaking
+
+- `site` removed from `DocsThemeConfig`; set it directly in `astro.config.mjs`. The integration throws at startup if missing. Astro freezes `Astro.url.origin` before integration hooks run, so `updateConfig({ site })` silently produced localhost in production canonical and OG URLs.
+
 ## 0.13.1
 
 ### Fixed
