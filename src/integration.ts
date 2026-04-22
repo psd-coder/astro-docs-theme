@@ -12,7 +12,7 @@ import { adaptiveCodeTheme } from "./themes/adaptive-code-theme";
 import type { DocsThemeConfig, SiteConfig } from "./types";
 import { generateScopedName, transitiveCssPlugin } from "./utils/cssModules";
 import { fonts } from "./utils/fonts";
-import { deriveBase, getGithubUrl } from "./utils/github";
+import { getGithubUrl } from "./utils/github";
 import { isGenerated, resolveImageSource } from "./utils/ogResolve";
 import { deriveTwitterCreator } from "./utils/twitter";
 import { buildConfigModule, virtualReexportDefault } from "./utils/virtualModules";
@@ -123,11 +123,8 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
           );
         }
 
-        const base = deriveBase(config.project.github);
-        const effectiveBase =
-          astroConfig.base && astroConfig.base !== "/" ? astroConfig.base : base;
         const publicSiteUrl =
-          astroConfig.site.replace(/\/$/, "") + effectiveBase.replace(/\/$/, "");
+          astroConfig.site.replace(/\/$/, "") + astroConfig.base.replace(/\/$/, "");
         const astroRoot = fileURLToPath(astroConfig.root);
 
         const extraEntriesModuleCode = config.docs?.extraEntries
@@ -315,8 +312,6 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
         }
 
         updateConfig({
-          site: astroConfig.site,
-          base: effectiveBase,
           integrations,
           ...(config.theme?.fonts !== false && { fonts: fonts() }),
           markdown: {
