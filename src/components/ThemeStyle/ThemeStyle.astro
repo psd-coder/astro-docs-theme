@@ -1,0 +1,8 @@
+---
+import { theme } from "virtual:pigment-config";
+---
+
+<style
+  is:global
+  set:html={`:root { --theme-hue-override: ${theme.hue}; --theme-saturation-override: ${theme.saturation}; }`}
+></style>

@@ -6,7 +6,7 @@ An Astro 6 documentation theme with dark mode, interactive playgrounds, and SEO 
 
 - **Single integration**: rehype plugins, PostCSS, Shiki themes, sitemap, and SEO routes configured automatically
 - **Dark mode**: three-state toggle (auto/light/dark) with View Transitions, no FOUC
-- **Theming**: set `theme.hue` in config; all colors derive via OKLch
+- **Theming**: set `theme.hue` and `theme.saturation` in config; all colors derive via OKLch
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
 - **Social cards**: auto-generated `/og.png` and Twitter card meta tags, with a built-in template, static PNG, or custom satori template (dedicated `meta.og.image.logo` recommended for best results)
@@ -66,27 +66,27 @@ Drop your `.md`/`.mdx` files in `src/content/docs/`. The integration injects `/[
 
 To render pages yourself, set `docs.renderDefaultPage: false` and create your own `src/pages/[...slug].astro`. Reuse the boilerplate via `getDocsStaticPaths` from `astro-pigment/utils/content`.
 
-### Pick a theme hue (optional)
+### Pick theme colors (optional)
 
-Temporarily enable the hue slider to find the right color for your site:
-
-```js
-docsTheme({
-  // ...your config
-  huePicker: true, // shows a color slider in the header
-});
-```
-
-Drag the slider, pick a hue you like, then set it in config and remove `huePicker`:
+Temporarily enable the theme picker to dial in hue and saturation for your site:
 
 ```js
 docsTheme({
   // ...your config
-  theme: { hue: 135 },
+  themePicker: true, // shows a hue + saturation picker on the page
 });
 ```
 
-`theme.hue` drives both the site CSS variables and the auto-generated OG image. All UI and code syntax highlighting colors derive from this hue via OKLch.
+Drag the hue ring and saturation slider, pick values you like, then hardcode them in CSS and remove `themePicker`:
+
+```js
+docsTheme({
+  // ...your config
+  theme: { hue: 135, saturation: 70 },
+});
+```
+
+All UI colors derive from these values via OKLch. Saturation is a 0-100 multiplier applied to surfaces, text, accent, and border chromas (default 50 = current look, 0 = monochrome, 100 = 2x). Code syntax highlighting keeps its own tuned chromas and only follows the hue.
 
 ## Integration Config
 
@@ -108,9 +108,9 @@ type DocsThemeConfig = {
   author?: { name: string; url: string; icon?: string };
   credits?: Array<{ name: string; url: string }>;
   logo?: string; // path to SVG rendered as header logo
-  huePicker?: boolean; // show hue slider in header for initial theme setup
   clientRouter?: boolean; // Astro View Transitions, default true
   search?: boolean; // full-text search, default true
+  themePicker?: boolean; // show hue + saturation picker in header for initial theme setup
   theme?: {
     hue?: number; // base hue 0-360, default 180
     shiki?: { light: string; dark: string }; // overrides adaptive theme
@@ -283,7 +283,7 @@ docsTheme({
 }
 ```
 
-For hue, use `theme.hue` in the integration config (see above). All color tokens are derived from `--theme-hue` using OKLch, so changing the hue recolors the entire site.
+For hue, use `theme.hue` and `theme.saturation` in the integration config (see above). `saturation` is a 0-100 multiplier applied to surfaces, text, accent, and border chromas (default 50 = current look, 0 = monochrome, 100 = 2x). Code syntax colors keep their own tuned chromas and follow the hue only.
 
 ### Available tokens
 

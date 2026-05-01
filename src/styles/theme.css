@@ -1,18 +1,23 @@
 :root {
   --theme-hue: var(--theme-hue-override, 180);
-  --color-surface-1: oklch(99% 0.01 var(--theme-hue));
-  --color-surface-2: oklch(98% 0.01 var(--theme-hue));
-  --color-surface-3: oklch(96% 0.012 var(--theme-hue));
-  --color-surface-4: oklch(99.9% 0.01 var(--theme-hue));
-  --color-text-primary: oklch(15% 0.025 var(--theme-hue));
-  --color-text-secondary: oklch(40% 0.02 var(--theme-hue));
-  --color-text-tertiary: oklch(75% 0.02 var(--theme-hue));
+  --theme-saturation: var(--theme-saturation-override, 50);
+  /* Default 50 keeps the current UI look at 1x; 0 = grayscale, 100 = 2x chroma.
+     Applies to surfaces/text/accent/border only — code highlighting keeps its own
+     tuned chromas so syntax colors stay readable regardless of the slider. */
+  --theme-saturation-factor: calc(var(--theme-saturation) / 50);
+  --color-surface-1: oklch(99% calc(0.01 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-2: oklch(98% calc(0.01 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-3: oklch(96% calc(0.012 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-4: oklch(99.9% calc(0.01 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-primary: oklch(15% calc(0.025 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-secondary: oklch(40% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-tertiary: oklch(75% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-text-tertiary-hover: oklch(from var(--color-text-tertiary) calc(l - 0.15) c h);
-  --color-accent: oklch(55% 0.15 var(--theme-hue));
-  --color-accent-dark: oklch(50% 0.15 var(--theme-hue));
+  --color-accent: oklch(55% calc(0.15 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-accent-dark: oklch(50% calc(0.15 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-accent-focus: oklch(from var(--color-accent) l c h / 50%);
-  --color-border: oklch(90% 0.02 var(--theme-hue));
-  --color-border-hover: oklch(82% 0.02 var(--theme-hue));
+  --color-border: oklch(90% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-border-hover: oklch(82% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-backdrop: oklch(0% 0 var(--theme-hue) / 50%);
 
   /* Code highlighting: hue offsets from Catppuccin, anchored so --code-string = --theme-hue.
@@ -45,19 +50,19 @@
 }
 
 [data-theme="dark"] {
-  --color-surface-1: oklch(12% 0.02 var(--theme-hue));
-  --color-surface-2: oklch(18% 0.02 var(--theme-hue));
-  --color-surface-3: oklch(21% 0.02 var(--theme-hue));
-  --color-surface-4: oklch(21% 0.023 var(--theme-hue));
-  --color-text-primary: oklch(90% 0.02 var(--theme-hue));
-  --color-text-secondary: oklch(75% 0.02 var(--theme-hue));
-  --color-text-tertiary: oklch(45% 0.02 var(--theme-hue));
+  --color-surface-1: oklch(12% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-2: oklch(18% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-3: oklch(21% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-surface-4: oklch(21% calc(0.023 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-primary: oklch(90% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-secondary: oklch(75% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-text-tertiary: oklch(45% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-text-tertiary-hover: oklch(from var(--color-text-tertiary) calc(l + 0.15) c h);
-  --color-accent: oklch(65% 0.15 var(--theme-hue));
-  --color-accent-dark: oklch(60% 0.15 var(--theme-hue));
+  --color-accent: oklch(65% calc(0.15 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-accent-dark: oklch(60% calc(0.15 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-accent-focus: oklch(from var(--color-accent) l c h / 50%);
-  --color-border: oklch(25% 0.02 var(--theme-hue));
-  --color-border-hover: oklch(35% 0.02 var(--theme-hue));
+  --color-border: oklch(25% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
+  --color-border-hover: oklch(35% calc(0.02 * var(--theme-saturation-factor)) var(--theme-hue));
   --color-backdrop: oklch(30% 0 var(--theme-hue) / 80%);
 
   --code-keyword: oklch(75% 0.11 mod(calc(var(--theme-hue) + 155), 360));

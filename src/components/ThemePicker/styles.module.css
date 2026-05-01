@@ -1,0 +1,330 @@
+@layer docs-theme {
+  /* :where() keeps zero specificity so consumer classes (e.g. Layout's fixed-position
+     floating wrapper) can still override `position` without fighting us. */
+  :where(.host) {
+    position: relative;
+  }
+
+  .host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 32);
+    height: calc(var(--spacing) * 32);
+
+    pointer-events: none;
+
+    /* Anchor the trigger near the corner when closed; slide inward when open
+       so the panel and sat arc have breathing room. Assumes bottom-right placement. */
+    transform: translate(calc(var(--spacing) * 10), calc(var(--spacing) * 10));
+
+    /* Closing: wait for sat layer to fade out before sliding back to corner. */
+    transition: transform 0.1s ease-out 0.08s;
+  }
+
+  /* Capture clicks across the whole picker area when open so empty zones (ring gap,
+     sat arc band, corners) don't reach the document — otherwise the close-outside
+     listener would treat them as outside clicks and close the picker. */
+  .host[data-open] {
+    pointer-events: auto;
+
+    transform: translate(0, 0);
+
+    /* Opening: slide in immediately, in sync with hue panel scale-up. */
+    transition: transform 0.1s ease-out;
+  }
+
+  .trigger {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    padding: 0;
+
+    cursor: pointer;
+    appearance: none;
+    pointer-events: auto;
+
+    border: 2px solid var(--color-border);
+    border-radius: 50%;
+
+    background: oklch(65% 0.15 var(--hue, var(--theme-hue)));
+
+    transition:
+      transform 0.1s,
+      box-shadow 0.1s,
+      opacity 0.1s;
+
+    &:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 2px var(--color-border);
+    }
+  }
+
+  .host[data-open] .trigger {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Tooltip floats to the left of the trigger (above clipped at the viewport edge given
+     bottom-right corner placement) and zooms out from trigger position when shown.
+     Gap = trigger half-width (12px) + visual gap (4px) = 16px = var(--spacing) * 4.
+     transform-origin sits at trigger center, so scale(0) collapses the tooltip into the
+     trigger and scale(1) expands it to its resting position to the left. */
+  .tooltip {
+    --tooltip-gap: calc(var(--spacing) * 4);
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 10;
+    transform: translate(calc(-100% - var(--tooltip-gap)), -50%) scale(0);
+    transform-origin: calc(100% + var(--tooltip-gap)) 50%;
+
+    white-space: nowrap;
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+
+    font-size: 12px;
+    line-height: 1;
+
+    color: var(--color-surface-1);
+
+    border-radius: var(--radius-sm);
+    background: var(--color-text-primary);
+
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+      transform 0.08s ease-out,
+      opacity 0.08s ease-out,
+      visibility 0.08s;
+  }
+
+  .tooltip[data-visible] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(calc(-100% - var(--tooltip-gap)), -50%) scale(1);
+  }
+
+  /* Staggered open/close: opening = hue panel 0-100ms then sat layer 80-160ms.
+     Closing = sat layer 0-80ms then hue panel 80-180ms. */
+  .panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: auto;
+
+    opacity: 0;
+    visibility: hidden;
+    scale: 0.15;
+
+    transition:
+      opacity 0.1s ease-out 0.08s,
+      scale 0.1s ease-out 0.08s,
+      visibility 0.1s 0.08s;
+  }
+
+  .host[data-open] .panel {
+    opacity: 1;
+    visibility: visible;
+    scale: 1;
+
+    transition:
+      opacity 0.1s ease-out,
+      scale 0.1s ease-out,
+      visibility 0.1s;
+  }
+
+  .ring {
+    position: relative;
+    width: calc(var(--spacing) * 20);
+    height: calc(var(--spacing) * 20);
+
+    border-radius: 50%;
+
+    /* Prevent the browser from claiming touchmove for scroll after a ring tap —
+       otherwise the pointer is cancelled and tap-then-drag stops mid-gesture. */
+    touch-action: none;
+
+    background: conic-gradient(
+      from 0deg,
+      oklch(65% 0.15 0),
+      oklch(65% 0.15 60),
+      oklch(65% 0.15 120),
+      oklch(65% 0.15 180),
+      oklch(65% 0.15 240),
+      oklch(65% 0.15 300),
+      oklch(65% 0.15 360)
+    );
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      height: 50%;
+
+      border-radius: 60%;
+
+      background: var(--color-surface-1);
+      cursor: default;
+    }
+  }
+
+  .handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+
+    cursor: grab;
+    touch-action: none;
+
+    border: 2px solid white;
+    border-radius: 50%;
+
+    background: oklch(65% 0.15 var(--hue, var(--theme-hue)));
+
+    box-shadow: 0 0 4px oklch(0% 0 0 / 30%);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .close {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing);
+
+    cursor: pointer;
+    appearance: none;
+
+    border: none;
+    border-radius: 50%;
+    background: none;
+
+    color: var(--color-text-tertiary);
+
+    transition: color 0.1s;
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Saturation arc */
+  .satLayer {
+    position: absolute;
+    inset: 0;
+
+    visibility: hidden;
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.08s ease-in,
+      visibility 0.08s;
+  }
+
+  .host[data-open] .satLayer {
+    visibility: visible;
+    opacity: 1;
+
+    transition:
+      opacity 0.08s ease-out 0.08s,
+      visibility 0s 0.08s;
+  }
+
+  .satArc {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+  }
+
+  .satArcPath {
+    fill: none;
+    stroke: url(#theme-picker-sat-grad);
+    stroke-width: 10;
+    stroke-linecap: round;
+    cursor: pointer;
+    pointer-events: visibleStroke;
+    touch-action: none;
+  }
+
+  .satStopTop {
+    stop-color: oklch(65% 0.3 var(--theme-hue));
+  }
+
+  .satStopBot {
+    stop-color: oklch(65% 0 var(--theme-hue));
+  }
+
+  .satHandle {
+    --sat-angle: calc((100 - var(--sat, 50)) / 100 * 120deg - 60deg);
+    --sat-radius: 52px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+    transform: translate(
+      calc(cos(var(--sat-angle)) * var(--sat-radius) - 50%),
+      calc(sin(var(--sat-angle)) * var(--sat-radius) - 50%)
+    );
+
+    cursor: grab;
+    touch-action: none;
+
+    border: 2px solid white;
+    border-radius: 50%;
+
+    background: oklch(65% calc(0.15 * var(--sat, 50) / 50) var(--theme-hue));
+
+    box-shadow: 0 0 4px oklch(0% 0 0 / 30%);
+
+    pointer-events: auto;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .host,
+    .panel,
+    .satLayer,
+    .trigger,
+    .tooltip {
+      transition: none;
+    }
+  }
+}

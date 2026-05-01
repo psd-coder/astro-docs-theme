@@ -43,11 +43,12 @@ declare module "virtual:pigment-config" {
   export const githubUrl: string;
   export const publicSiteUrl: string;
   export const logo: string | null;
-  export const huePicker: boolean;
+  export const themePicker: boolean;
   export const clientRouter: boolean;
   export const search: boolean;
   export const theme: {
     hue: number;
+    saturation: number;
   };
   export const docs: {
     directory: string;

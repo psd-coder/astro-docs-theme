@@ -14,11 +14,11 @@ importers:
         specifier: link:..
         version: link:..
       nanostores:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.3.0
+        version: 1.3.0
       nanotags:
-        specifier: ^0.14.0
-        version: 0.14.0(nanostores@1.2.0)
+        specifier: ^0.15.2
+        version: 0.15.2(nanostores@1.3.0)
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -1745,17 +1745,17 @@ packages:
     engines: { node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1 }
     hasBin: true
 
-  nanostores@1.2.0:
+  nanostores@1.3.0:
     resolution:
       {
-        integrity: sha512-F0wCzbsH80G7XXo0Jd9/AVQC7ouWY6idUCTnMwW5t/Rv9W8qmO6endavDwg7TNp5GbugwSukFMVZqzPSrSMndg==,
+        integrity: sha512-XPUa/jz+P1oJvN9VBxw4L9MtdFfaH3DAryqPssqhb2kXjmb9npz0dly6rCsgFWOPr4Yg9mTfM3MDZgZZ+7A3lA==,
       }
     engines: { node: ^20.0.0 || >=22.0.0 }
 
-  nanotags@0.14.0:
+  nanotags@0.15.2:
     resolution:
       {
-        integrity: sha512-Cgazsjfn/948wayBf+oHzhgaPpxibPUhj4jrIlRpmizKvvbHJIxRWAvLfZtCVxpO9YY8NVtZD9TFSIjZjJQh4Q==,
+        integrity: sha512-CGWafcNQ5aV/ghZmOvWkWGByzMiEGIioGzL/05et8krDzQIJBxUnA48TD1rbdcRtVx3xyLwMk9iNfM6touT1/g==,
       }
     peerDependencies:
       nanostores: ^1.1.1
@@ -3587,12 +3587,12 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanostores@1.2.0: {}
+  nanostores@1.3.0: {}
 
-  nanotags@0.14.0(nanostores@1.2.0):
+  nanotags@0.15.2(nanostores@1.3.0):
     dependencies:
       "@standard-schema/spec": 1.1.0
-      nanostores: 1.2.0
+      nanostores: 1.3.0
 
   neotraverse@0.6.18: {}
 

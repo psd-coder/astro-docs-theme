@@ -5,21 +5,21 @@ import {
   clientRouter,
   docs,
   githubUrl,
-  huePicker,
   logo,
   meta,
   search,
   siteConfig,
-  theme,
+  themePicker,
 } from "virtual:pigment-config";
 import "../../styles/index.css";
 import type { AlternateLink, NavItem } from "../../types";
 import { getHref, isActiveHref } from "../../utils/urls";
 import CodeBlockWrapper from "../CodeBlockWrapper/CodeBlockWrapper.astro";
 import Footer from "../Footer/Footer.astro";
-import HuePicker from "../HuePicker/HuePicker.astro";
-import HueScript from "../HuePicker/HueScript.astro";
 import Icon from "../Icon/Icon.astro";
+import ThemePicker from "../ThemePicker/ThemePicker.astro";
+import ThemePickerScript from "../ThemePicker/ThemePickerScript.astro";
+import ThemeStyle from "../ThemeStyle/ThemeStyle.astro";
 import LayoutFavicons from "./LayoutFavicons.astro";
 import LayoutMeta from "./LayoutMeta.astro";
 
@@ -59,10 +59,10 @@ const resolvedDescription = description ?? siteConfig.project.description;
     <link rel="sitemap" href={getHref("sitemap-index.xml")} />
     <Font cssVariable="--font-sans" preload />
     <Font cssVariable="--font-mono" preload />
-    <style is:global set:html={`:root { --theme-hue-override: ${theme.hue}; }`}></style>
+    <ThemeStyle />
     {clientRouter && <ClientRouter />}
     <ThemeScript />
-    {huePicker && <HueScript />}
+    {themePicker && <ThemePickerScript />}
     <script src="./scripts.ts"></script>
     <slot name="head-extra" />
   </head>
@@ -150,7 +150,7 @@ const resolvedDescription = description ?? siteConfig.project.description;
       <slot name="footer-extra" slot="extra" />
     </Footer>
     <CodeBlockWrapper />
-    {huePicker && <HuePicker class={styles.huePicker} />}
+    {themePicker && <ThemePicker class={styles.themePicker} />}
   </body>
 </html>
 <script>

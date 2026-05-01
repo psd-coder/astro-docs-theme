@@ -12,7 +12,7 @@ LLM-friendly endpoints, and a library of interactive components.
 
 - **Single integration**: rehype plugins, PostCSS, Shiki themes, sitemap, and SEO routes configured automatically
 - **Dark mode**: three-state toggle (auto/light/dark) with View Transitions, no FOUC
-- **Theming**: set `theme.hue` in config; all colors derive via OKLch
+- **Theming**: set `theme.hue` and `theme.saturation` in config; all colors derive via OKLch
 - **Interactive playgrounds**: CodeMirror editor + sandboxed live preview with console capture
 - **LLM endpoints**: `/llms.txt` and `/llms-full.txt` auto-generated from your markdown content
 - **Bundled fonts**: Martian Grotesk + Martian Mono auto-injected (opt out with `fonts: false`)
@@ -47,7 +47,7 @@ export default defineConfig({
         github: { user: "your-name", repository: "your-repo" },
       },
       author: { name: "Your Name", url: "https://x.com/your_handle" },
-      icon: "src/assets/icon.svg",
+      meta: { icon: "src/assets/icon.svg" },
       docs: {
         navLinks: [
           { href: "/", label: "Overview" },
@@ -72,22 +72,22 @@ Drop `.md`/`.mdx` files into `src/content/docs/`. The integration injects `/[...
 
 Dark mode, sticky header, sidebar + mobile TOC, code copy buttons, favicons, webmanifest, sitemap, LLM endpoints, and footer are all wired up automatically.
 
-### 3. Pick a theme hue (optional)
+### 3. Pick theme colors (optional)
 
-Temporarily enable the hue slider to find the right color for your site:
+Temporarily enable the theme picker to dial in hue and saturation for your site:
 
 ```js
 docsTheme({
   // ...your config
-  huePicker: true, // shows a hue picker in the header
+  themePicker: true, // shows a hue + saturation picker on the page
 });
 ```
 
-Drag the slider, pick a hue you like, then set it in config and remove `huePicker`:
+Drag the hue ring and saturation slider, pick values you like, then set them in config and remove `themePicker`:
 
 ```js
 docsTheme({
   // ...your config
-  theme: { hue: 135 }, // the value you picked
+  theme: { hue: 135, saturation: 70 }, // the values you picked
 });
 ```

@@ -1,0 +1,363 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "../Icon";
+import styles from "./styles.module.css";
+
+type Props = HTMLAttributes<"div">;
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<x-theme-picker class:list={[styles.host, className]} {...rest}>
+  <button
+    data-ref="trigger"
+    class={styles.trigger}
+    type="button"
+    aria-label="Open theme picker"
+    aria-expanded="false"></button>
+  <div data-ref="tooltip" class={styles.tooltip} role="status" aria-live="polite">Theme copied</div>
+  <div class={styles.panel}>
+    <div data-ref="ring" class={styles.ring}>
+      <div
+        data-ref="handle"
+        class={styles.handle}
+        role="slider"
+        tabindex="-1"
+        aria-label="Theme hue"
+        aria-valuemin="0"
+        aria-valuemax="360"
+        aria-valuenow="180"
+      >
+      </div>
+    </div>
+    <button data-ref="close" class={styles.close} type="button" aria-label="Close theme picker">
+      <Icon name="close" size={16} />
+    </button>
+  </div>
+  <div data-ref="satLayer" class={styles.satLayer}>
+    <svg class={styles.satArc} viewBox="-64 -64 128 128" aria-hidden="true">
+      <defs>
+        <linearGradient
+          id="theme-picker-sat-grad"
+          gradientUnits="userSpaceOnUse"
+          x1="0"
+          y1="-52"
+          x2="0"
+          y2="52"
+        >
+          <stop class={styles.satStopTop} offset="0%"></stop>
+          <stop class={styles.satStopBot} offset="100%"></stop>
+        </linearGradient>
+      </defs>
+      <path data-ref="satPath" class={styles.satArcPath} d="M 26 -45 A 52 52 0 0 1 26 45"></path>
+    </svg>
+    <div
+      data-ref="satHandle"
+      class={styles.satHandle}
+      role="slider"
+      tabindex="0"
+      aria-label="Theme saturation"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="50"
+    >
+    </div>
+  </div>
+  <script is:inline>
+    var hue = localStorage.getItem("theme-hue");
+    var sat = localStorage.getItem("theme-saturation");
+    document.querySelectorAll("x-theme-picker").forEach(function (el) {
+      if (hue) el.style.setProperty("--hue", hue);
+      if (sat) el.style.setProperty("--sat", sat);
+    });
+  </script>
+</x-theme-picker>
+<script>
+  import { define } from "nanotags";
+  import { atom } from "nanostores";
+  import { $hue, $saturation } from "../../stores/theme";
+
+  const RING_SIZE = 80;
+  const RING_RADIUS = RING_SIZE / 2;
+  // Hue handle orbits at midpoint of the ring band (band spans ~65%-100% of radius)
+  const HUE_ORBIT_RADIUS = RING_RADIUS * 0.75;
+
+  function hueToXY(hue: number): { x: number; y: number } {
+    // conic-gradient starts at top (0deg), clockwise: convert to math angle
+    const rad = ((hue - 90) * Math.PI) / 180;
+    return {
+      x: Math.cos(rad) * HUE_ORBIT_RADIUS,
+      y: Math.sin(rad) * HUE_ORBIT_RADIUS,
+    };
+  }
+
+  function xyToHue(clientX: number, clientY: number, cx: number, cy: number): number {
+    const rad = Math.atan2(clientX - cx, -(clientY - cy));
+    return Math.round(((rad * 180) / Math.PI + 360) % 360);
+  }
+
+  // Sat arc spans 120° centered at 3 o'clock: 30° (sat 100) -> 90° (sat 50) -> 150° (sat 0).
+  function xyToSat(clientX: number, clientY: number, cx: number, cy: number): number {
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    let angleDeg: number;
+
+    if (dx >= 0) {
+      const rad = Math.atan2(dx, -dy);
+      angleDeg = Math.max(30, Math.min(150, (rad * 180) / Math.PI));
+    } else {
+      angleDeg = dy <= 0 ? 30 : 150;
+    }
+
+    return Math.round(100 - ((angleDeg - 30) / 120) * 100);
+  }
+
+  define("x-theme-picker")
+    .withRefs(({ one }) => ({
+      trigger: one("button"),
+      tooltip: one("div"),
+      ring: one("div"),
+      handle: one("div"),
+      close: one("button"),
+      satLayer: one("div"),
+      satPath: one("path"),
+      satHandle: one("div"),
+    }))
+    .setup((ctx) => {
+      const { trigger, tooltip, ring, handle, close, satLayer, satPath, satHandle } = ctx.refs;
+      const $open = atom(false);
+
+      function updateHueHandle(hue: number) {
+        const { x, y } = hueToXY(hue);
+        handle.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        handle.setAttribute("aria-valuenow", String(hue));
+      }
+
+      function applyHue(hue: string) {
+        document.documentElement.style.setProperty("--theme-hue-override", hue);
+        ctx.host.style.setProperty("--hue", hue);
+      }
+
+      function applySaturation(sat: string) {
+        document.documentElement.style.setProperty("--theme-saturation-override", sat);
+        ctx.host.style.setProperty("--sat", sat);
+        satHandle.setAttribute("aria-valuenow", sat);
+      }
+
+      function setHue(hue: number) {
+        $hue.set(String(hue));
+      }
+
+      function setSat(sat: number) {
+        $saturation.set(String(sat));
+      }
+
+      // Open / close
+      ctx.effect($open, (isOpen) => {
+        trigger.setAttribute("aria-expanded", String(isOpen));
+        handle.tabIndex = isOpen ? 0 : -1;
+
+        if (isOpen) {
+          ctx.host.dataset["open"] = "";
+          handle.focus();
+        } else {
+          delete ctx.host.dataset["open"];
+        }
+      });
+
+      let tooltipTimer: number | undefined;
+
+      async function closeAndCopy() {
+        if (!$open.get()) return;
+        const hue = Number($hue.get());
+        const saturation = Number($saturation.get());
+        await navigator.clipboard.writeText(`{ hue: ${hue}, saturation: ${saturation} }`);
+
+        $open.set(false);
+
+        tooltip.toggleAttribute("data-visible", true);
+        if (tooltipTimer !== undefined) clearTimeout(tooltipTimer);
+        tooltipTimer = window.setTimeout(() => {
+          tooltip.toggleAttribute("data-visible", false);
+          tooltipTimer = undefined;
+        }, 2000);
+      }
+
+      ctx.on(trigger, "click", () => {
+        if (tooltipTimer !== undefined) {
+          clearTimeout(tooltipTimer);
+          tooltipTimer = undefined;
+        }
+        tooltip.toggleAttribute("data-visible", false);
+        $open.set(true);
+      });
+      ctx.on(close, "click", () => {
+        closeAndCopy();
+        trigger.focus();
+      });
+
+      // Click outside
+      function onDocumentClick(ev: MouseEvent) {
+        if ($open.get() && !ctx.host.contains(ev.target as Node)) {
+          closeAndCopy();
+        }
+      }
+      document.addEventListener("click", onDocumentClick);
+      ctx.onCleanup(() => document.removeEventListener("click", onDocumentClick));
+
+      // Hue keyboard
+      ctx.on(handle, "keydown", (ev: KeyboardEvent) => {
+        if (ev.key === "Escape") {
+          closeAndCopy();
+          trigger.focus();
+          return;
+        }
+
+        const current = Number($hue.get());
+        const step = ev.shiftKey ? 10 : 1;
+        let next: number | null = null;
+
+        switch (ev.key) {
+          case "ArrowRight":
+          case "ArrowUp":
+            next = (current + step) % 360;
+            break;
+          case "ArrowLeft":
+          case "ArrowDown":
+            next = (current - step + 360) % 360;
+            break;
+          case "Home":
+            next = 0;
+            break;
+          case "End":
+            next = 359;
+            break;
+          default:
+            return;
+        }
+
+        ev.preventDefault();
+        setHue(next);
+      });
+
+      // Hue drag
+      function onHuePointerMove(ev: PointerEvent) {
+        const rect = ring.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        setHue(xyToHue(ev.clientX, ev.clientY, cx, cy));
+      }
+
+      function onHuePointerUp() {
+        window.removeEventListener("pointermove", onHuePointerMove);
+        window.removeEventListener("pointerup", onHuePointerUp);
+        handle.style.cursor = "";
+      }
+
+      function startHueDrag(ev: PointerEvent) {
+        ev.preventDefault();
+        handle.style.cursor = "grabbing";
+        window.addEventListener("pointermove", onHuePointerMove);
+        window.addEventListener("pointerup", onHuePointerUp);
+      }
+
+      ctx.on(handle, "pointerdown", startHueDrag);
+      ctx.on(ring, "pointerdown", (ev: PointerEvent) => {
+        const target = ev.target as Node;
+        if (target === handle || close.contains(target)) return;
+        const rect = ring.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        setHue(xyToHue(ev.clientX, ev.clientY, cx, cy));
+        startHueDrag(ev);
+      });
+
+      // Saturation keyboard
+      ctx.on(satHandle, "keydown", (ev: KeyboardEvent) => {
+        if (ev.key === "Escape") {
+          closeAndCopy();
+          trigger.focus();
+          return;
+        }
+
+        const current = Number($saturation.get());
+        const step = ev.shiftKey ? 10 : 1;
+        let next: number | null = null;
+
+        switch (ev.key) {
+          case "ArrowUp":
+          case "ArrowRight":
+            next = Math.min(100, current + step);
+            break;
+          case "ArrowDown":
+          case "ArrowLeft":
+            next = Math.max(0, current - step);
+            break;
+          case "Home":
+            next = 0;
+            break;
+          case "End":
+            next = 100;
+            break;
+          default:
+            return;
+        }
+
+        ev.preventDefault();
+        setSat(next);
+      });
+
+      // Saturation drag
+      function onSatPointerMove(ev: PointerEvent) {
+        const rect = satLayer.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        setSat(xyToSat(ev.clientX, ev.clientY, cx, cy));
+      }
+
+      function onSatPointerUp() {
+        window.removeEventListener("pointermove", onSatPointerMove);
+        window.removeEventListener("pointerup", onSatPointerUp);
+        satHandle.style.cursor = "";
+      }
+
+      function startSatDrag(ev: PointerEvent) {
+        ev.preventDefault();
+        satHandle.style.cursor = "grabbing";
+        window.addEventListener("pointermove", onSatPointerMove);
+        window.addEventListener("pointerup", onSatPointerUp);
+      }
+
+      ctx.on(satHandle, "pointerdown", startSatDrag);
+      ctx.on(satPath, "pointerdown", (ev: PointerEvent) => {
+        const rect = satLayer.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        setSat(xyToSat(ev.clientX, ev.clientY, cx, cy));
+        startSatDrag(ev);
+      });
+
+      ctx.onCleanup(() => {
+        window.removeEventListener("pointermove", onHuePointerMove);
+        window.removeEventListener("pointerup", onHuePointerUp);
+        window.removeEventListener("pointermove", onSatPointerMove);
+        window.removeEventListener("pointerup", onSatPointerUp);
+        if (tooltipTimer !== undefined) clearTimeout(tooltipTimer);
+      });
+
+      // Sync with stores
+      ctx.onCleanup(
+        $hue.listen((val) => {
+          applyHue(val);
+          updateHueHandle(Number(val));
+        }),
+      );
+      ctx.onCleanup($saturation.listen(applySaturation));
+
+      // Init
+      const initialHue = Number($hue.get());
+      applyHue(String(initialHue));
+      updateHueHandle(initialHue);
+      applySaturation($saturation.get());
+    });
+</script>

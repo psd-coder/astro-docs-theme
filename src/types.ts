@@ -77,8 +77,8 @@ export type OgTemplateFn = (ctx: OgTemplateContext) => unknown | Promise<unknown
 export type DocsThemeConfig = SiteConfig & {
   /** Path to SVG file rendered as the header logo. Replaces the default project name text. */
   logo?: string;
-  /** Show hue picker in header for interactive theme color customization. */
-  huePicker?: boolean;
+  /** Show theme picker (hue + saturation) in header for interactive color customization. */
+  themePicker?: boolean;
   /** Enable Astro View Transitions via ClientRouter. Default: true. */
   clientRouter?: boolean;
   /** Enable full-text search. Default: true. */
@@ -87,6 +87,8 @@ export type DocsThemeConfig = SiteConfig & {
   theme?: {
     /** Base hue (0-360). Default: 180. */
     hue?: number;
+    /** Saturation multiplier (0-100). Default: 50 (current look). 0 = monochrome, 100 = 2x chroma. */
+    saturation?: number;
     /** Shiki themes. Overrides the default adaptive hue-based theme. */
     shiki?: {
       light: string;
