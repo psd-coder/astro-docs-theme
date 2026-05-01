@@ -32,7 +32,7 @@ export default defineConfig({
           },
         },
       },
-      huePicker: true,
+      themePicker: true,
       search: true,
       docs: {
         navLinks: [

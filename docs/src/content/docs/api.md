@@ -47,9 +47,10 @@ docsTheme({
   // Replaces the default project name text. The logo slot in Layout still overrides this.
   // logo: "src/assets/logo.svg",
 
-  // Optional: show hue slider in header to pick a theme hue.
-  // Use it to find the right value, then set theme.hue in config and remove this.
-  huePicker: true,
+  // Optional: show theme picker in header to choose hue + saturation interactively.
+  // Use it to find the right values, then set theme.hue / theme.saturation
+  // and remove this.
+  themePicker: true,
 
   // Optional: enable Astro ViewTransitions. Default: true.
   // clientRouter: false,
@@ -145,20 +146,20 @@ The theme uses CSS variables with fallback defaults. Override them in your own C
 }
 ```
 
-For hue, use `theme.hue` in the integration config — it's the single source of truth for both the site CSS and the auto-generated OG image. All color tokens derive from `--theme-hue` using OKLch, so changing the hue recolors the entire site, including syntax highlighting in code blocks.
+For customizing theme, use `theme.hue` and `theme.saturation` in the integration config — it's the single source of truth for both the site CSS and the auto-generated OG image. `saturation` is a 0-100 multiplier applied to surfaces, text, accent, and border chromas: default 50 keeps the current look, 0 renders fully monochrome, 100 doubles every chroma. Code syntax colors use their own tuned chromas and follow the hue only, so readability is preserved at any saturation.
 
-### Picking a hue
+### Picking a theme
 
-Enable `huePicker: true` in the integration config to show a hue slider in the header. Drag it to find the right value, then set `theme.hue` in config and remove `huePicker`:
+Enable `themePicker: true` in the integration config to show a combined hue + saturation picker on the page. Drag the hue ring and the saturation slider to find the right values, then hardcode them with `theme.hue` / `theme.saturation` and remove `themePicker`:
 
 ```js
 docsTheme({
   // ...
-  theme: { hue: 135 },
+  theme: { hue: 135, saturation: 70 },
 });
 ```
 
-The slider persists its value to `localStorage`, so you can test across page loads. Once you've settled on a hue, turn it off: the slider is a setup tool, not a production feature.
+The picker persists its values to `localStorage`, so you can test across page loads. Once you've settled, turn it off: the picker is a setup tool, not a production feature.
 
 ### Color tokens
 

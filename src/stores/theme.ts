@@ -9,6 +9,9 @@ export type ResolvedTheme = "light" | "dark";
 export const DEFAULT_HUE = "180";
 export const $hue = persistentAtom<string>("theme-hue", DEFAULT_HUE);
 
+export const DEFAULT_SATURATION = "50";
+export const $saturation = persistentAtom<string>("theme-saturation", DEFAULT_SATURATION);
+
 const CYCLE: ThemeSetting[] = ["auto", "light", "dark"];
 
 export const $themeSetting = persistentAtom<ThemeSetting>("theme", "auto");

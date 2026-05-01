@@ -98,11 +98,12 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
     sansBold: path.resolve(__dirname, "assets/fonts/MartianGrotesk-StdBd.ttf"),
     mono: path.resolve(__dirname, "assets/fonts/MartianMono-Regular.ttf"),
   };
-  const huePicker = config.huePicker ?? false;
+  const themePicker = config.themePicker ?? false;
   const clientRouter = config.clientRouter ?? true;
   const search = config.search ?? true;
   const logo = config.logo ? readSvg(config.logo) : null;
   const themeHue = config.theme?.hue ?? 180;
+  const themeSaturation = config.theme?.saturation ?? 50;
   const lang = config.meta?.lang ?? "en";
   const titleSuffix =
     config.meta?.titleSuffix !== undefined ? config.meta.titleSuffix : siteConfig.project.name;
@@ -197,10 +198,10 @@ export function createIntegration(config: DocsThemeConfig): AstroIntegration {
           githubUrl,
           publicSiteUrl,
           logo,
-          huePicker,
+          themePicker,
           clientRouter,
           search,
-          theme: { hue: themeHue },
+          theme: { hue: themeHue, saturation: themeSaturation },
           docs: { ...docsConfig, navLinks },
           meta: {
             lang,

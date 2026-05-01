@@ -120,8 +120,8 @@ importers:
         specifier: ^1.0.0
         version: 1.2.0
       nanotags:
-        specifier: ^0.15.0
-        version: 0.15.0(nanostores@1.2.0)
+        specifier: ^0.15.2
+        version: 0.15.2(nanostores@1.2.0)
       oxlint:
         specifier: ^1.59.0
         version: 1.59.0
@@ -3418,10 +3418,10 @@ packages:
       }
     engines: { node: ^20.0.0 || >=22.0.0 }
 
-  nanotags@0.15.0:
+  nanotags@0.15.2:
     resolution:
       {
-        integrity: sha512-+HbFjP8RVJBXaFuxtz4Z8Fzh6rFBGjLGddjZZxWOmC7Ga7W4Ujsm3u77fljQAnFsSN/X2UOpTrvH5pg03wzMGA==,
+        integrity: sha512-CGWafcNQ5aV/ghZmOvWkWGByzMiEGIioGzL/05et8krDzQIJBxUnA48TD1rbdcRtVx3xyLwMk9iNfM6touT1/g==,
       }
     peerDependencies:
       nanostores: ^1.1.1
@@ -6808,7 +6808,7 @@ snapshots:
 
   nanostores@1.2.0: {}
 
-  nanotags@0.15.0(nanostores@1.2.0):
+  nanotags@0.15.2(nanostores@1.2.0):
     dependencies:
       "@standard-schema/spec": 1.1.0
       nanostores: 1.2.0

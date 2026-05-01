@@ -19,7 +19,7 @@
 }
 
 * {
-  scrollbar-color: oklch(from var(--color-accent-dark) calc(l + 0.1) c h) transparent;
+  scrollbar-color: oklch(from var(--color-accent-dark) calc(l + 0.1) calc(c - 0.04) h) transparent;
 }
 
 html[data-theme-switching] * {

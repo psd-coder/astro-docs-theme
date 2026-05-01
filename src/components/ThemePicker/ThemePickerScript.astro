@@ -1,0 +1,15 @@
+<script is:inline>
+  function applyCurrentTheme() {
+    var hue = localStorage.getItem("theme-hue");
+    var saturation = localStorage.getItem("theme-saturation");
+
+    if (hue) {
+      document.documentElement.style.setProperty("--theme-hue-override", hue);
+    }
+    if (saturation) {
+      document.documentElement.style.setProperty("--theme-saturation-override", saturation);
+    }
+  }
+  applyCurrentTheme();
+  document.addEventListener("astro:after-swap", applyCurrentTheme);
+</script>
