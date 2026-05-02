@@ -1,15 +1,18 @@
-<script is:inline>
-  function applyCurrentTheme() {
-    var hue = localStorage.getItem("theme-hue");
-    var saturation = localStorage.getItem("theme-saturation");
+---
+import { DEFAULT_HUE, DEFAULT_SATURATION } from "../../stores/theme";
+---
 
-    if (hue) {
-      document.documentElement.style.setProperty("--theme-hue-override", hue);
-    }
-    if (saturation) {
-      document.documentElement.style.setProperty("--theme-saturation-override", saturation);
-    }
+<script is:inline define:vars={{ DEFAULT_HUE, DEFAULT_SATURATION }}>
+  function applyCurrentTheme(root) {
+    var hue = localStorage.getItem("theme-hue") || DEFAULT_HUE;
+    var saturation = localStorage.getItem("theme-saturation") || DEFAULT_SATURATION;
+    root.style.setProperty("--theme-hue-override", hue);
+    root.style.setProperty("--theme-saturation-override", saturation);
   }
-  applyCurrentTheme();
-  document.addEventListener("astro:after-swap", applyCurrentTheme);
+  applyCurrentTheme(document.documentElement);
+  // Apply to the incoming document before swap so ClientRouter's attribute merge
+  // preserves the inline style and avoids a brief recompute with fallback hue.
+  document.addEventListener("astro:before-swap", function (e) {
+    applyCurrentTheme(e.newDocument.documentElement);
+  });
 </script>
