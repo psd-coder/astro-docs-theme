@@ -1,12 +1,16 @@
 <script is:inline>
-  function applyCurrentTheme() {
+  function applyCurrentTheme(root) {
     var setting = localStorage.getItem("theme") || "auto";
     var dark =
       setting === "dark" ||
       (setting === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
-    document.documentElement.dataset.themeSetting = setting;
+    root.dataset.theme = dark ? "dark" : "light";
+    root.dataset.themeSetting = setting;
   }
-  applyCurrentTheme();
-  document.addEventListener("astro:after-swap", applyCurrentTheme);
+  applyCurrentTheme(document.documentElement);
+  // Apply to the incoming document before swap so ClientRouter's attribute merge
+  // preserves data-theme and avoids a flash to the opposite color scheme.
+  document.addEventListener("astro:before-swap", function (e) {
+    applyCurrentTheme(e.newDocument.documentElement);
+  });
 </script>
