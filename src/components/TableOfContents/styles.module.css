@@ -75,11 +75,11 @@
 
     margin-left: auto;
 
-    @media (--min-mobiles) {
+    @media (--min-tablets) {
       bottom: calc(var(--layout-gap-x) + var(--spacing) * 10);
     }
 
-    @media (--min-tablets) {
+    @media (--min-laptops) {
       display: none;
     }
   }

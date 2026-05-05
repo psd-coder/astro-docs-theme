@@ -204,9 +204,18 @@
 
   .themePicker {
     position: fixed;
-    right: 0;
-    bottom: 0;
+    bottom: calc(var(--spacing) * 3);
+    right: calc(var(--spacing) * 12);
     z-index: 50;
+
+    @media (--min-tablets) {
+      bottom: calc(var(--layout-gap-x) + var(--spacing) * 9);
+    }
+
+    @media (--min-laptops) {
+      right: 0;
+      bottom: 0;
+    }
   }
 
   .footer {
