@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.16.0
+
+### Breaking
+
+- Theme picker now exposes a saturation axis. `theme` config accepts `saturation` (0-100) alongside `hue`; CSS scales chroma off it. `HuePicker` public export removed — folded into `ThemePicker`. Closing the picker copies `{ hue, saturation }` and flashes a "Theme copied" tooltip.
+- Media query breakpoint custom properties renamed: `--min-mobiles`/`--min-tablets`/`--min-laptops` → `--min-tablets`/`--min-laptops`/`--min-desktop`. Min-width values offset by 1px to avoid overlap with matching max-width queries.
+
+### Fixed
+
+- Keep mobile TOC popover visible inside hidden sidebar aside by collapsing the aside with `display: contents` under `--tablets`.
+- Prevent theme attr flash during `ClientRouter` swap by applying theme overrides on `astro:before-swap` to `event.newDocument`.
+
 ## 0.15.0
 
 ### Breaking
